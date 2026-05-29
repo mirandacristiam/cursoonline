@@ -1,0 +1,504 @@
+/* /cursoonline/assets/css/style.css */
+/* ============================================================
+ * Estilos globales y de la Landing Page — EduTech Academy
+ * Proyecto: EduTech Academy
+ * ============================================================ */
+
+:root {
+    --primary-color: #1A3C6E;      /* Azul Oscuro */
+    --secondary-color: #2563EB;    /* Azul Medio */
+    --accent-color: #60A5FA;       /* Azul Claro */
+    --light-bg: #F8FAFC;           /* Gris Ultra Claro */
+    --dark-text: #1E293B;          /* Gris Oscuro */
+    --muted-text: #64748B;         /* Gris Medio */
+    --white: #FFFFFF;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    color: var(--dark-text);
+    background-color: var(--white);
+    overflow-x: hidden;
+}
+
+/* ------------------------------------------------------------
+ * HEADER Y NAVEGACIÓN
+ * ------------------------------------------------------------ */
+.navbar-custom {
+    background-color: transparent;
+    padding: 1rem 0;
+    transition: var(--transition-smooth);
+    z-index: 1000;
+}
+
+.navbar-custom.navbar-scrolled {
+    background-color: rgba(26, 60, 110, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 0.6rem 0;
+}
+
+.navbar-brand-custom {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--white) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-brand-custom i {
+    color: var(--accent-color);
+}
+
+.nav-link-custom {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+    position: relative;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link-custom:hover {
+    color: var(--white) !important;
+}
+
+.nav-link-custom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem;
+    height: 2px;
+    background-color: var(--accent-color);
+    transform: scaleX(0);
+    transition: var(--transition-smooth);
+}
+
+.nav-link-custom:hover::after {
+    transform: scaleX(1);
+}
+
+/* ------------------------------------------------------------
+ * SECCIÓN HERO
+ * ------------------------------------------------------------ */
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #1A3C6E 0%, #2563EB 50%, #1E40AF 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    padding-top: 100px;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: rgba(56, 189, 248, 0.15);
+    border-radius: 50%;
+    top: -200px;
+    right: -100px;
+    filter: blur(80px);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.hero-tag {
+    color: var(--accent-color);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+}
+
+/* ------------------------------------------------------------
+ * BOTONES PERSONALIZADOS
+ * ------------------------------------------------------------ */
+.btn-custom-primary {
+    background-color: var(--accent-color);
+    color: var(--primary-color) !important;
+    font-weight: 600;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: 2px solid transparent;
+    transition: var(--transition-smooth);
+}
+
+.btn-custom-primary:hover {
+    background-color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(56, 189, 248, 0.4);
+}
+
+.btn-custom-outline {
+    background-color: transparent;
+    color: var(--white) !important;
+    font-weight: 600;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    transition: var(--transition-smooth);
+}
+
+.btn-custom-outline:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--white);
+    transform: translateY(-3px);
+}
+
+/* ------------------------------------------------------------
+ * CARACTERÍSTICAS (BENEFICIOS)
+ * ------------------------------------------------------------ */
+.features-section {
+    padding: 6rem 0;
+    background-color: var(--white);
+}
+
+.section-tagline {
+    color: var(--secondary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+}
+
+.feature-card {
+    background-color: var(--light-bg);
+    border-radius: 20px;
+    padding: 2.5rem;
+    transition: var(--transition-smooth);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    height: 100%;
+}
+
+.feature-card:hover {
+    background-color: var(--white);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(26, 60, 110, 0.08);
+    border-color: rgba(37, 99, 235, 0.1);
+}
+
+.feature-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transition-smooth);
+}
+
+.feature-card:hover .feature-icon-wrapper {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+/* ------------------------------------------------------------
+ * CATÁLOGO DE CURSOS
+ * ------------------------------------------------------------ */
+.courses-section {
+    padding: 6rem 0;
+    background-color: var(--light-bg);
+}
+
+.category-filter-btn {
+    border: none;
+    background-color: var(--white);
+    color: var(--dark-text);
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 500;
+    margin: 0.25rem;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.category-filter-btn.active, .category-filter-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.course-card {
+    background-color: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+}
+
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.course-card-img-wrapper {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.course-card-img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    transition: var(--transition-smooth);
+}
+
+.course-card:hover .course-card-img {
+    transform: scale(1.05);
+}
+
+.course-card-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.course-card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-card-meta {
+    font-size: 0.85rem;
+    color: var(--muted-text);
+    margin-bottom: 0.8rem;
+    display: flex;
+    gap: 15px;
+}
+
+.course-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+}
+
+.course-card-text {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.course-card-footer {
+    border-top: 1px solid #F1F5F9;
+    padding-top: 1rem;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+}
+
+/* ------------------------------------------------------------
+ * TESTIMONIOS
+ * ------------------------------------------------------------ */
+.testimonials-section {
+    padding: 6rem 0;
+    background-color: var(--white);
+}
+
+.testimony-card {
+    background-color: var(--light-bg);
+    border-radius: 20px;
+    padding: 2.5rem;
+    height: 100%;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.testimony-quote {
+    font-size: 1.8rem;
+    color: rgba(37, 99, 235, 0.15);
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
+}
+
+.testimony-text {
+    font-style: italic;
+    color: var(--dark-text);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.testimony-student {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.testimony-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.testimony-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.testimony-role {
+    font-size: 0.8rem;
+    color: var(--muted-text);
+    margin: 0;
+}
+
+/* ------------------------------------------------------------
+ * CONTACTO
+ * ------------------------------------------------------------ */
+.contact-section {
+    padding: 6rem 0;
+    background-color: var(--light-bg);
+}
+
+.contact-card {
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+}
+
+/* ------------------------------------------------------------
+ * FOOTER
+ * ------------------------------------------------------------ */
+.footer-section {
+    background-color: #0B132B;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 5rem 0 2rem;
+}
+
+.footer-brand {
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-brand i {
+    color: var(--accent-color);
+}
+
+.footer-title {
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.footer-links a:hover {
+    color: var(--accent-color);
+    padding-left: 5px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 15px;
+    margin-top: 1.5rem;
+}
+
+.footer-social-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.05);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+
+.footer-social-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 2rem;
+    margin-top: 4rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/*
+ * ============================================================
+ * RESUMEN DEL ARCHIVO: /cursoonline/assets/css/style.css
+ * ============================================================
+ * Estilos visuales del landing page y componentes del sitio web.
+ * ============================================================
+ */

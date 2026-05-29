@@ -1,0 +1,661 @@
+/* /cursoonline/assets/css/detalle-curso.css */
+/* ============================================================
+ * Estilos de la Página de Detalle de Curso — EduTech Academy
+ * ============================================================ */
+
+:root {
+    --dc-primary: #1E293B;
+    --dc-accent: #2563EB;
+    --dc-hero-from: #0F172A;
+    --dc-hero-to: #1E3A5F;
+    --light: #F8FAFC;
+    --border: #E2E8F0;
+    --text-muted: #64748B;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light);
+    color: #1E293B;
+    min-height: 100vh;
+}
+
+/* ============================================================
+ * NAVBAR
+ * ============================================================ */
+.dc-navbar {
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(10px);
+    padding: 0.85rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dc-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dc-brand i {
+    color: #3B82F6;
+}
+
+.dc-brand:hover {
+    color: #93C5FD;
+}
+
+/* ============================================================
+ * HERO
+ * ============================================================ */
+.dc-hero {
+    background: linear-gradient(135deg, var(--dc-hero-from) 0%, var(--dc-hero-to) 60%,
+            rgba(var(--cat-color, #37, #99, #235), 0.4) 100%);
+    padding: 3.5rem 0 4rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.dc-hero::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+    top: -150px;
+    right: -150px;
+    pointer-events: none;
+}
+
+.dc-breadcrumb {
+    margin-bottom: 0;
+}
+
+.dc-breadcrumb .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+}
+
+.dc-breadcrumb .breadcrumb-item a:hover {
+    color: #fff;
+}
+
+.dc-breadcrumb .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.dc-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.dc-category-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+.dc-hero-title {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.dc-hero-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+/* Métricas */
+.dc-metrics {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.dc-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.dc-metric strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.dc-metric span {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.78rem;
+}
+
+.dc-metric-sep {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 0.5rem;
+}
+
+/* Profesor en hero */
+.dc-professor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dc-professor-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+}
+
+.dc-level-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* ============================================================
+ * BUY CARD (Tarjeta de compra en el hero)
+ * ============================================================ */
+.dc-buy-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    color: #1E293B;
+}
+
+.dc-buy-card-img {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.dc-buy-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dc-play-btn {
+    display: block;
+    position: relative;
+    height: 100%;
+}
+
+.dc-play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.dc-play-overlay i {
+    font-size: 3rem;
+}
+
+.dc-play-btn:hover .dc-play-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.dc-buy-card-body {
+    padding: 1.5rem;
+}
+
+/* Precio */
+.dc-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.dc-price-main {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0F172A;
+    line-height: 1;
+}
+
+.dc-price-old {
+    font-size: 1rem;
+    color: #94A3B8;
+    text-decoration: line-through;
+}
+
+.dc-price-pct {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    background: #DC2626;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+/* Botón inscripción */
+.dc-btn-enroll {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+}
+
+.dc-btn-enroll:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+}
+
+.dc-btn-enroll.dc-btn-enrolled {
+    background: linear-gradient(135deg, #16A34A, #15803D);
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.35);
+}
+
+.dc-btn-login {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--dc-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.dc-btn-login:hover {
+    color: #1D4ED8;
+    text-decoration: underline;
+}
+
+/* Incluye */
+.dc-includes-list {
+    list-style: none;
+    padding: 0;
+}
+
+.dc-includes-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.45rem 0;
+    font-size: 0.875rem;
+    color: #475569;
+    border-bottom: 1px solid var(--border);
+}
+
+.dc-includes-list li:last-child {
+    border-bottom: none;
+}
+
+.dc-includes-list li i {
+    width: 18px;
+    text-align: center;
+}
+
+/* ============================================================
+ * CONTENIDO PRINCIPAL
+ * ============================================================ */
+.dc-main {
+    padding: 3rem 0 4rem;
+}
+
+.dc-section {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.dc-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+}
+
+/* Lo que aprenderás - grid 2col */
+.dc-learn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.6rem;
+}
+
+.dc-learn-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.875rem;
+    color: #374151;
+    padding: 0.5rem 0.75rem;
+    background: #F0FDF4;
+    border-radius: 8px;
+    border: 1px solid #BBFAB7;
+}
+
+/* Descripción expandible */
+.dc-description {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #374151;
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    position: relative;
+}
+
+.dc-description.expanded {
+    max-height: 9999px;
+}
+
+.dc-show-more {
+    background: none;
+    border: 1px solid var(--dc-accent);
+    color: var(--dc-accent);
+    border-radius: 8px;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dc-show-more:hover {
+    background: var(--dc-accent);
+    color: #fff;
+}
+
+/* Curriculum */
+.dc-curriculum-summary {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.dc-accordion {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.dc-accordion-item {
+    border-bottom: 1px solid var(--border);
+}
+
+.dc-accordion-item:last-child {
+    border-bottom: none;
+}
+
+.dc-accordion-btn {
+    width: 100%;
+    background: #F8FAFC;
+    border: none;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.15s;
+    gap: 1rem;
+}
+
+.dc-accordion-btn:hover {
+    background: #F1F5F9;
+}
+
+.dc-lesson-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.dc-chevron {
+    transition: transform 0.25s ease;
+    color: var(--text-muted);
+}
+
+.dc-accordion-btn:not(.collapsed) .dc-chevron {
+    transform: rotate(180deg);
+}
+
+.dc-accordion-body {
+    display: none;
+    background: #fff;
+    padding: 0;
+}
+
+.dc-accordion-body.open {
+    display: block;
+}
+
+.dc-lesson-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #F1F5F9;
+    transition: background 0.1s;
+    gap: 1rem;
+}
+
+.dc-lesson-item:last-child {
+    border-bottom: none;
+}
+
+.dc-lesson-item:hover {
+    background: #F8FAFC;
+}
+
+.dc-lesson-item.preview {
+    background: #EFF6FF;
+}
+
+.dc-preview-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #2563EB;
+    background: #DBEAFE;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dc-lesson-duration {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Lista de requisitos / para quién */
+.dc-bullet-list {
+    list-style: none;
+    padding: 0;
+}
+
+.dc-bullet-list li {
+    padding: 0.45rem 0;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.dc-bullet-list li:last-child {
+    border-bottom: none;
+}
+
+/* Instructor */
+.dc-instructor-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.dc-instructor-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border);
+    flex-shrink: 0;
+}
+
+.dc-instructor-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.5rem;
+}
+
+.dc-instructor-bio {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ============================================================
+ * SIDEBAR STICKY
+ * ============================================================ */
+.dc-sticky-sidebar {
+    position: sticky;
+    top: 80px;
+}
+
+.dc-buy-card-mini {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Compartir */
+.dc-share-btns a {
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+ * FOOTER
+ * ============================================================ */
+.dc-footer {
+    background: #0F172A;
+    color: #fff;
+    padding: 2rem 0;
+}
+
+.dc-footer .dc-brand {
+    color: #fff;
+    justify-content: center;
+}
+
+/* ============================================================
+ * RESPONSIVE
+ * ============================================================ */
+@media (max-width: 767.98px) {
+    .dc-hero {
+        padding: 2rem 0;
+    }
+
+    .dc-hero-title {
+        font-size: 1.5rem;
+    }
+
+    .dc-buy-card {
+        margin-top: 1.5rem;
+    }
+
+    .dc-section {
+        padding: 1.25rem;
+    }
+
+    .dc-learn-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dc-metrics {
+        gap: 0.5rem;
+    }
+
+    .dc-metric-sep {
+        display: none;
+    }
+}
+
+/*
+ * ============================================================
+ * RESUMEN: /cursoonline/assets/css/detalle-curso.css
+ * ============================================================
+ * Hoja de estilos exclusiva de la página de detalle de curso.
+ * Navbar oscuro, hero con gradiente dinámico por color de categoría,
+ * buy card flotante, accordion de curriculum, sección instructor
+ * y compartir en redes sociales.
+ * ============================================================
+ */

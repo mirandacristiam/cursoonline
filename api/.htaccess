@@ -1,0 +1,31 @@
+# /cursoonline/api/.htaccess
+# ============================================================
+# Configuración de seguridad para la carpeta /api/
+# Solo permite acceso a archivos .php con peticiones legítimas.
+# Bloquea exploración de directorios y accesos no autorizados.
+# ============================================================
+
+# --- Deshabilitar listado de directorios ---
+Options -Indexes
+
+# --- Solo permitir archivos PHP ---
+<FilesMatch "^(?!.*\.php$)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# --- Cabeceras CORS: solo aceptar desde el mismo origen ---
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "http://localhost"
+    Header always set Access-Control-Allow-Methods "GET, POST"
+    Header always set Access-Control-Allow-Headers "Content-Type, X-Requested-With, X-CSRF-Token"
+    Header always set Content-Type "application/json; charset=utf-8"
+</IfModule>
+
+# ============================================================
+# RESUMEN: /cursoonline/api/.htaccess
+# Protege la carpeta de APIs: deshabilita listado, permite solo
+# archivos .php, y configura CORS para aceptar únicamente
+# peticiones desde el propio dominio del proyecto.
+# Última actualización: Fase 1 — Fundamentos y Base de Datos
+# ============================================================

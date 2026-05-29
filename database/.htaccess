@@ -1,0 +1,16 @@
+# /cursoonline/database/.htaccess
+# ============================================================
+# Bloquea TODO acceso directo a la carpeta /database/.
+# Los scripts SQL nunca deben ser accesibles desde el navegador.
+# ============================================================
+
+Order deny,allow
+Deny from all
+
+# ============================================================
+# RESUMEN: /cursoonline/database/.htaccess
+# Protección total de la carpeta /database/ que contiene los
+# scripts SQL del esquema y datos iniciales.
+# Ningún usuario puede acceder desde el navegador.
+# Última actualización: Fase 1 — Fundamentos y Base de Datos
+# ============================================================

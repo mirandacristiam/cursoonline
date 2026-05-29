@@ -1,0 +1,16 @@
+# /cursoonline/config/.htaccess
+# ============================================================
+# Bloquea todo acceso directo a la carpeta de configuración.
+# Ningún usuario ni navegador debe poder acceder directamente
+# a los archivos de configuración de la base de datos.
+# ============================================================
+
+Order deny,allow
+Deny from all
+
+# ============================================================
+# RESUMEN: /cursoonline/config/.htaccess
+# Bloquea completamente el acceso directo a la carpeta /config/.
+# Protege credenciales de base de datos y constantes del sistema.
+# Última actualización: Fase 1 — Fundamentos y Base de Datos
+# ============================================================

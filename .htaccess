@@ -1,0 +1,81 @@
+# /.htaccess
+# ============================================================
+# Archivo de configuración principal de seguridad para Apache
+# Proyecto: EduTech Academy
+# ============================================================
+
+# --- Deshabilitar listado de directorios ---
+Options -Indexes
+
+# --- Ocultar firma del servidor ---
+ServerSignature Off
+
+# --- Proteger archivos sensibles ---
+<FilesMatch "\.(sql|log|env|ini|conf|bak|sh|json|lock|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# --- Proteger archivos ocultos (.htaccess, .htpasswd, etc.) ---
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# --- Headers de Seguridad HTTP ---
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# --- Motor de reescritura de URLs ---
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear intentos de inyección en Query String
+    RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [NC,OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [NC,OR]
+    RewriteCond %{QUERY_STRING} (\.\./|%2e%2e%2f|%2e\./) [NC]
+    RewriteRule .* - [F,L]
+
+    # Bloquear User-Agents maliciosos comunes
+    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|scan|nikto|sqlmap|acunetix|nmap) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# --- Páginas de error personalizadas ---
+ErrorDocument 403 /cursoonline/error/403.php
+ErrorDocument 404 /cursoonline/error/404.php
+ErrorDocument 500 /cursoonline/error/500.php
+
+# --- Tiempo de cache para recursos estáticos ---
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-font-woff "access plus 1 month"
+</IfModule>
+
+# ============================================================
+# RESUMEN: /.htaccess
+# Archivo de configuración Apache principal del proyecto EduTech Academy.
+# Funciones:
+#   - Deshabilita el listado de directorios (Options -Indexes)
+#   - Bloquea acceso directo a archivos sensibles (.sql, .log, .env, etc.)
+#   - Configura headers de seguridad HTTP (XSS, MIME, Frame, HSTS)
+#   - Protege contra inyección SQL y XSS en Query Strings
+#   - Bloquea User-Agents de herramientas de escaneo malicioso
+#   - Define páginas de error personalizadas (403, 404, 500)
+#   - Configura caché de recursos estáticos para rendimiento
+# Última actualización: Fase 1 — Fundamentos y Base de Datos
+# ============================================================
