@@ -1,9 +1,9 @@
 Integrantes
 
-Juan Camilo Noguera
-Antonio Bravo
-Brayan Amaya
-Cristian Miranda
+Juan Camilo Noguera;
+Antonio Bravo;
+Brayan Amaya;
+Cristian Miranda;
 
 Asignatura, Inteligencia Artificial y Machine Learning
 Docente: Jorge Rudas
