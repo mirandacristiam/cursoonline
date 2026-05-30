@@ -28,7 +28,7 @@ de solucionar lo del limite nos tocó iniciar sesion con 10 correos aproximadame
    de los cursos que se encuentran disponibles (en esto seguimos trabajando para poder llegar a la meta esperada)
 
 Hasta el momento hemos logrado los avances en los que la IA nos permitio llegar creo que con mas limite de respuesta pudiesemos avanzar.
-Cabe resaltar que seguiremos trabajando en el proyecto para poer presentarlo a completitud, y lo estaremos actualizando en este repositorio
+Cabe resaltar que seguiremos trabajando en el proyecto para poder presentarlo a completitud, y lo estaremos actualizando en este repositorio
 y en nuestro hosting.
 
 Muchas gracias por su amable atencion, quedamos atento a sus comentarios.
