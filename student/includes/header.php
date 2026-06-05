@@ -80,6 +80,11 @@ $script_name = basename($_SERVER['PHP_SELF']);
                         <i class="fas fa-book-reader"></i> Mis Cursos
                     </a>
                 </li>
+                <li class="sidebar-item <?= $script_name === 'explorar-cursos.php' ? 'active' : '' ?>">
+                    <a href="explorar-cursos.php" class="sidebar-link">
+                        <i class="fas fa-compass"></i> Explorar Cursos
+                    </a>
+                </li>
                 <li class="sidebar-item <?= $script_name === 'evaluaciones.php' ? 'active' : '' ?>">
                     <a href="evaluaciones.php" class="sidebar-link">
                         <i class="fas fa-file-signature"></i> Evaluaciones

@@ -1,0 +1,65 @@
+# /admin/.htaccess
+# ============================================================
+# Archivo de seguridad principal del panel de administración.
+# EduTech Academy — Panel Admin Total
+# ============================================================
+
+# --- Deshabilitar listado de directorios ---
+Options -Indexes
+
+# --- Ocultar firma del servidor ---
+ServerSignature Off
+
+# --- Proteger archivos sensibles ---
+<FilesMatch "\.(sql|log|env|ini|conf|bak|sh|json|lock|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# --- Proteger archivos ocultos ---
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# --- Headers de Seguridad HTTP ---
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "no-referrer"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set Cache-Control "no-store, no-cache, must-revalidate"
+</IfModule>
+
+# --- Protección adicional: Bloquear ataques conocidos ---
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear intentos de inyección en Query String
+    RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [NC,OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [NC,OR]
+    RewriteCond %{QUERY_STRING} (\.\./|%2e%2e%2f) [NC]
+    RewriteRule .* - [F,L]
+
+    # Bloquear herramientas de escaneo maliciosas
+    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|scan|nikto|sqlmap|acunetix|nmap|masscan) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# --- Páginas de error personalizadas del admin ---
+ErrorDocument 403 /admin/error/403.php
+ErrorDocument 404 /admin/error/404.php
+ErrorDocument 500 /admin/error/500.php
+
+# ============================================================
+# RESUMEN: /admin/.htaccess
+# Seguridad máxima para el panel de administración total.
+# Acceso denegado a archivos sensibles, headers de seguridad
+# estrictos (incluyendo X-Frame-Options: DENY para prevenir
+# clickjacking), bloqueo de inyecciones y herramientas de escaneo.
+# Cache deshabilitada para proteger datos sensibles del admin.
+# Última actualización: Fase 1 — Fundamentos y Base de Datos
+# ============================================================

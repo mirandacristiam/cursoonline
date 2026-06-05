@@ -1,0 +1,188 @@
+<?php
+// /admin/index.php
+// ============================================================
+// Dashboard Global del Administrador Total
+// ============================================================
+
+$page_title = 'Dashboard Global';
+require_once __DIR__ . '/includes/header.php';
+
+// --- 1. METRICAS CLAVE DE AUDITORÍA Y NEGOCIO ---
+
+// Total Cursos Activos
+$stmt_courses = $pdo->query("SELECT COUNT(*) FROM cursos WHERE estado_activo = 1");
+$total_cursos = (int)$stmt_courses->fetchColumn();
+
+// Total Estudiantes Activos
+$stmt_studs = $pdo->query("SELECT COUNT(*) FROM usuarios WHERE id_rol_fk = " . ROL_ESTUDIANTE . " AND estado_activo = 1");
+$total_estudiantes = (int)$stmt_studs->fetchColumn();
+
+// Facturación Total COP (Ventas Aprobadas)
+$stmt_sales = $pdo->query("SELECT SUM(monto_total) FROM transacciones_pago WHERE estado_transaccion = 'aprobada' AND estado_activo = 1");
+$total_ventas = $stmt_sales->fetchColumn();
+$total_ventas = $total_ventas !== null ? (float)$total_ventas : 0.0;
+
+// Mensajes de contacto pendientes de respuesta
+$stmt_contact = $pdo->query("SELECT COUNT(*) FROM contacto_formulario WHERE estado_respuesta = 'pendiente' AND estado_activo = 1");
+$total_contacto_pendientes = (int)$stmt_contact->fetchColumn();
+
+// --- 2. LISTADO DE TRANSACCIONES RECIENTES ---
+$stmt_txs = $pdo->query("
+    SELECT t.numero_referencia, t.monto_total, t.estado_transaccion, t.fecha_transaccion,
+           c.titulo_curso, u.primer_nombre, u.primer_apellido
+    FROM transacciones_pago t
+    JOIN cursos c ON t.id_curso_fk = c.id_curso_pk
+    JOIN usuarios u ON t.id_usuario_fk = u.id_usuario_pk
+    WHERE t.estado_activo = 1
+    ORDER BY t.fecha_transaccion DESC
+    LIMIT 5
+");
+$transacciones_recientes = $stmt_txs->fetchAll();
+
+// --- 3. LOG RECIENTE DE ERRORES O INTENTOS FALLIDOS (SEGURIDAD) ---
+$stmt_audit = $pdo->query("
+    SELECT * 
+    FROM log_intentos_fallidos 
+    ORDER BY fecha_ultimo_intento DESC
+    LIMIT 5
+");
+$intentos_fallidos = $stmt_audit->fetchAll();
+?>
+
+<!-- ENCABEZADO Y TITULO -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 fw-bold text-primary mb-1">Dashboard Global Administrativo</h1>
+        <p class="text-muted m-0">Monitoreo en tiempo real de métricas comerciales, seguridad y estado académico.</p>
+    </div>
+</div>
+
+<!-- GRID DE MÉTRICAS -->
+<div class="row g-4 mb-4">
+    <!-- Cursos -->
+    <div class="col-md-3 col-sm-6">
+        <article class="admin-stat-card">
+            <div>
+                <p class="text-muted small fw-semibold text-uppercase m-0">Cursos Activos</p>
+                <h3 class="fw-bold m-0 mt-1"><?= $total_cursos ?></h3>
+            </div>
+            <div class="admin-stat-icon icon-blue">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+        </article>
+    </div>
+    <!-- Estudiantes -->
+    <div class="col-md-3 col-sm-6">
+        <article class="admin-stat-card">
+            <div>
+                <p class="text-muted small fw-semibold text-uppercase m-0">Alumnos Inscritos</p>
+                <h3 class="fw-bold m-0 mt-1"><?= $total_estudiantes ?></h3>
+            </div>
+            <div class="admin-stat-icon icon-green">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+        </article>
+    </div>
+    <!-- Ventas -->
+    <div class="col-md-3 col-sm-6">
+        <article class="admin-stat-card">
+            <div>
+                <p class="text-muted small fw-semibold text-uppercase m-0">Facturación Total</p>
+                <h3 class="fw-bold m-0 mt-1">$<?= number_format($total_ventas, 0, ',', '.') ?></h3>
+            </div>
+            <div class="admin-stat-icon icon-red">
+                <i class="fas fa-cash-register"></i>
+            </div>
+        </article>
+    </div>
+    <!-- Contactos -->
+    <div class="col-md-3 col-sm-6">
+        <article class="admin-stat-card">
+            <div>
+                <p class="text-muted small fw-semibold text-uppercase m-0">Mensajes Pendientes</p>
+                <h3 class="fw-bold m-0 mt-1"><?= $total_contacto_pendientes ?></h3>
+            </div>
+            <div class="admin-stat-icon icon-purple">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Últimos Pagos -->
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-receipt me-2"></i>Últimas Transacciones Registradas</span>
+            </div>
+            <div class="admin-card-body p-0">
+                <?php if (empty($transacciones_recientes)): ?>
+                    <p class="text-muted p-4 text-center m-0">No hay transacciones registradas.</p>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-custom m-0 text-start">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Referencia</th>
+                                    <th>Estudiante</th>
+                                    <th>Curso</th>
+                                    <th>Total COP</th>
+                                    <th>Fecha</th>
+                                    <th class="pe-4">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($transacciones_recientes as $tx): ?>
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-secondary"><?= sanitizar_html($tx['numero_referencia']) ?></td>
+                                        <td><?= sanitizar_html($tx['primer_nombre'] . ' ' . $tx['primer_apellido']) ?></td>
+                                        <td class="fw-bold text-primary"><?= sanitizar_html($tx['titulo_curso']) ?></td>
+                                        <td class="fw-bold">$<?= number_format($tx['monto_total'], 0, ',', '.') ?></td>
+                                        <td class="small text-muted"><?= date('d/m/Y H:i', strtotime($tx['fecha_transaccion'])) ?></td>
+                                        <td class="pe-4">
+                                            <span class="badge <?= $tx['estado_transaccion'] === 'aprobada' ? 'bg-success' : 'bg-warning' ?>">
+                                                <?= sanitizar_html($tx['estado_transaccion']) ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Seguridad (Fuerza Bruta) -->
+    <div class="col-lg-4">
+        <div class="admin-card">
+            <div class="admin-card-header"><i class="fas fa-shield-alt me-2"></i>Logs de Seguridad (Anti Fuerza Bruta)</div>
+            <div class="admin-card-body p-0">
+                <?php if (empty($intentos_fallidos)): ?>
+                    <p class="text-muted p-4 text-center m-0">No se registran intentos fallidos de intrusión.</p>
+                <?php else: ?>
+                    <div class="list-group list-group-flush text-start">
+                        <?php foreach ($intentos_fallidos as $int): ?>
+                            <div class="list-group-item p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small fw-bold text-primary"><?= sanitizar_html($int['correo_electronico_intento']) ?></span>
+                                    <span class="badge bg-danger"><?= $int['numero_intentos'] ?> intentos</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-1 xsmall text-muted">
+                                    <span>IP: <?= sanitizar_html($int['direccion_ip']) ?></span>
+                                    <span>Bloqueado: <?= $int['estado_bloqueado'] ? 'Sí' : 'No' ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+require_once __DIR__ . '/includes/footer.php';
+?>

@@ -46,7 +46,8 @@ $ruta_cursos    = $prefix . 'cursos/index.php';
 $ruta_pagos     = $prefix . 'pagos/index.php';
 $ruta_reportes  = $prefix . 'reportes/index.php';
 $ruta_seguridad = $prefix . 'seguridad/index.php';
-$ruta_logout    = $prefix . '../auth/logout.php';
+// Logout siempre con URL absoluta para evitar errores de profundidad de directorio
+$ruta_logout    = BASE_URL . 'auth/logout.php';
 
 // Notificaciones sin leer del admin
 $nb_admin = 0;

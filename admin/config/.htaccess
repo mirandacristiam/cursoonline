@@ -1,0 +1,4 @@
+# /admin/config/.htaccess
+# Bloquea acceso directo a la carpeta de configuración del admin.
+Order deny,allow
+Deny from all

@@ -17,11 +17,11 @@ $docentes   = $pdo->query("SELECT id_usuario_pk, primer_nombre, primer_apellido 
 $form = [
     'titulo_curso'       => '',
     'resumen_corto'      => '',
-    'descripcion_larga'  => '',
+    'descripcion_detallada'  => '',
     'imagen_portada'     => '',
-    'video_trailer_url'  => '',
+    'video_presentacion'  => '',
     'precio'             => '0',
-    'precio_descuento'   => '',
+    'precio_con_descuento'   => '',
     'nivel_dificultad'   => 'principiante',
     'total_horas'        => '',
     'id_categoria_fk'    => '',
@@ -43,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Recoger y limpiar datos
         foreach ($form as $k => $_) {
             if (isset($_POST[$k])) {
-                $form[$k] = in_array($k, ['descripcion_larga', 'requisitos_previos', 'lo_que_aprenderas', 'para_quien_es'])
+                $form[$k] = in_array($k, ['descripcion_detallada', 'requisitos_previos', 'lo_que_aprenderas', 'para_quien_es'])
                     ? trim($_POST[$k])
                     : limpiar_entrada($_POST[$k]);
             }
         }
         $form['estado_activo'] = isset($_POST['estado_activo']) ? 1 : 0;
         $form['precio']        = (float)str_replace(['.', ','], ['', '.'], $form['precio']);
-        $form['precio_descuento'] = $form['precio_descuento'] !== '' ? (float)str_replace(['.', ','], ['', '.'], $form['precio_descuento']) : null;
+        $form['precio_descuento'] = $form['precio_con_descuento'] !== '' ? (float)str_replace(['.', ','], ['', '.'], $form['precio_descuento']) : null;
         $form['total_horas']   = $form['total_horas'] !== '' ? (float)$form['total_horas'] : null;
         $form['id_categoria_fk'] = (int)$form['id_categoria_fk'] ?: null;
         $form['id_profesor_fk']  = (int)$form['id_profesor_fk'] ?: null;
@@ -68,9 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $stmt = $pdo->prepare("CALL sp_crear_curso(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,@nuevo_id)");
                     $stmt->execute([
-                        $form['titulo_curso'], $form['resumen_corto'], $form['descripcion_larga'],
-                        $form['imagen_portada'] ?: null, $form['video_trailer_url'] ?: null,
-                        $form['precio'], $form['precio_descuento'],
+                        $form['titulo_curso'], $form['resumen_corto'], $form['descripcion_detallada'],
+                        $form['imagen_portada'] ?: null, $form['video_presentacion'] ?: null,
+                        $form['precio'], $form['precio_con_descuento'],
                         $form['nivel_dificultad'], $form['total_horas'],
                         $form['id_categoria_fk'], $form['id_profesor_fk'],
                         $form['requisitos_previos'] ?: null, $form['lo_que_aprenderas'] ?: null,
@@ -81,16 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } catch (PDOException $sp_err) {
                     // Fallback: INSERT directo si el SP no existe
                     $stmt_ins = $pdo->prepare("
-                        INSERT INTO cursos (titulo_curso, resumen_corto, descripcion_larga, imagen_portada,
-                            video_trailer_url, precio, precio_descuento, nivel_dificultad, total_horas,
+                        INSERT INTO cursos (titulo_curso, resumen_corto, descripcion_detallada, imagen_portada,
+                            video_presentacion, precio, precio_con_descuento, nivel_dificultad, total_horas,
                             id_categoria_fk, id_profesor_fk, requisitos_previos, lo_que_aprenderas,
                             para_quien_es, idioma, estado_activo, modificado_por)
                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                     ");
                     $stmt_ins->execute([
-                        $form['titulo_curso'], $form['resumen_corto'], $form['descripcion_larga'],
-                        $form['imagen_portada'] ?: null, $form['video_trailer_url'] ?: null,
-                        $form['precio'], $form['precio_descuento'],
+                        $form['titulo_curso'], $form['resumen_corto'], $form['descripcion_detallada'],
+                        $form['imagen_portada'] ?: null, $form['video_presentacion'] ?: null,
+                        $form['precio'], $form['precio_con_descuento'],
                         $form['nivel_dificultad'], $form['total_horas'],
                         $form['id_categoria_fk'], $form['id_profesor_fk'],
                         $form['requisitos_previos'] ?: null, $form['lo_que_aprenderas'] ?: null,

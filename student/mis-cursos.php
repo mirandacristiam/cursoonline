@@ -28,7 +28,9 @@ $inscripciones = $stmt->fetchAll();
             <h1 class="h3 fw-bold text-primary mb-1">Mis Cursos Activos</h1>
             <p class="text-muted m-0">Aquí tienes la lista completa de tus cursos y tu nivel de avance actual.</p>
         </div>
-        <a href="../index.php#cursos" class="btn btn-primary rounded-pill shadow-sm"><i class="fas fa-plus me-1"></i> Comprar Cursos</a>
+        <a href="explorar-cursos.php" class="btn btn-primary rounded-pill shadow-sm" id="btnComprarCursos">
+            <i class="fas fa-compass me-1"></i> Explorar Cursos
+        </a>
     </div>
 </div>
 
@@ -39,7 +41,9 @@ $inscripciones = $stmt->fetchAll();
                 <i class="fas fa-graduation-cap text-muted fs-1 mb-3"></i>
                 <h2 class="h4 fw-bold">Aún no tienes cursos inscritos</h2>
                 <p class="text-muted mb-4">Descubre nuestro amplio catálogo de cursos de ingeniería e inteligencia artificial.</p>
-                <a href="../index.php#cursos" class="btn btn-primary btn-lg rounded-pill px-4">Explorar Cursos</a>
+                <a href="explorar-cursos.php" class="btn btn-primary btn-lg rounded-pill px-4" id="btnExplorarCursos">
+                    <i class="fas fa-compass me-2"></i>Explorar Cursos
+                </a>
             </div>
         </div>
     <?php else: ?>

@@ -152,7 +152,9 @@ $cursos_recientes = $stmt_recent->fetchAll();
                     <div class="text-center py-5">
                         <i class="fas fa-book-reader text-muted fs-1 mb-3"></i>
                         <p class="text-muted">Aún no estás inscrito en ningún curso.</p>
-                        <a href="../index.php#cursos" class="btn btn-primary rounded-pill">Explorar Catálogo</a>
+                        <a href="explorar-cursos.php" class="btn btn-primary rounded-pill" id="btnExploraCatalogo">
+                            <i class="fas fa-compass me-1"></i>Explorar Catálogo
+                        </a>
                     </div>
                 <?php else: ?>
                     <div class="row g-3">
