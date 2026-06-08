@@ -49,8 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt_ins = $pdo->prepare("
                         INSERT INTO usuarios
                         (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,
-                         correo_electronico, contrasena_hash, telefono, id_rol_fk, estado_activo)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                         correo_electronico, contrasena_hash, numero_telefono, id_rol_fk,
+                         estado_activo, fecha_creacion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                     ");
                     $stmt_ins->execute([
                         $form['primer_nombre'], $form['segundo_nombre'] ?: null,

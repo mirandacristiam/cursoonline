@@ -5,8 +5,9 @@
 // ============================================================
 
 $page_title = 'Gestión de Usuarios';
+$page_script = '../assets/js/usuarios.js';
+$page_css    = '../assets/css/usuarios.css';
 require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../../cursoonline/includes/csrf.php';
 
 $msg_ok = $msg_err = '';
 
@@ -21,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_target   = (int)($_POST['id_usuario'] ?? 0);
         $nuevo_estado = (int)($_POST['nuevo_estado'] ?? 0);
         if ($id_target && $id_target !== $id_usuario) { // No puede cambiarse a sí mismo
-            $pdo->prepare("UPDATE usuarios SET estado_activo = ?, fecha_actualizacion = NOW() WHERE id_usuario_pk = ?")
-                ->execute([$nuevo_estado, $id_target]);
+            $pdo->prepare("UPDATE usuarios SET estado_activo = ?, fecha_modificacion = NOW(), modificado_por = ? WHERE id_usuario_pk = ?")
+                ->execute([$nuevo_estado, $id_usuario, $id_target]);
             $msg_ok = $nuevo_estado ? 'Usuario activado correctamente.' : 'Usuario desactivado correctamente.';
         } else {
             $msg_err = 'No puedes cambiar el estado de tu propio usuario.';
@@ -31,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_target  = (int)($_POST['id_usuario'] ?? 0);
         $nuevo_rol  = (int)($_POST['nuevo_rol']  ?? 0);
         if ($id_target && $id_target !== $id_usuario && in_array($nuevo_rol, [ROL_ADMIN_TOTAL, ROL_PROFESOR, ROL_ESTUDIANTE])) {
-            $pdo->prepare("UPDATE usuarios SET id_rol_fk = ?, fecha_actualizacion = NOW() WHERE id_usuario_pk = ?")
-                ->execute([$nuevo_rol, $id_target]);
+            $pdo->prepare("UPDATE usuarios SET id_rol_fk = ?, fecha_modificacion = NOW(), modificado_por = ? WHERE id_usuario_pk = ?")
+                ->execute([$nuevo_rol, $id_usuario, $id_target]);
             $msg_ok = 'Rol actualizado correctamente.';
         } else {
             $msg_err = 'Operación no permitida.';
@@ -78,11 +79,11 @@ $stmt_users = $pdo->prepare("
     SELECT u.id_usuario_pk, u.primer_nombre, u.segundo_nombre,
            u.primer_apellido, u.segundo_apellido,
            u.correo_electronico, u.id_rol_fk, r.nombre_rol,
-           u.estado_activo, u.fecha_registro, u.ultimo_acceso, u.telefono
+           u.estado_activo, u.fecha_creacion, u.ultimo_acceso, u.numero_telefono
     FROM usuarios u
     INNER JOIN roles r ON r.id_rol_pk = u.id_rol_fk
     WHERE {$where_sql}
-    ORDER BY u.fecha_registro DESC
+    ORDER BY u.fecha_creacion DESC
     LIMIT :limit OFFSET :offset
 ");
 foreach ($params as $key => $val) {
@@ -235,7 +236,7 @@ $stats = $pdo->query("
                         </span>
                     </td>
                     <td class="text-muted small">
-                        <?= $u['fecha_registro'] ? date('d/m/Y', strtotime($u['fecha_registro'])) : '—' ?>
+                        <?= $u['fecha_creacion'] ? date('d/m/Y', strtotime($u['fecha_creacion'])) : '—' ?>
                     </td>
                     <td class="text-muted small">
                         <?= $u['ultimo_acceso'] ? date('d/m/Y H:i', strtotime($u['ultimo_acceso'])) : 'Nunca' ?>
