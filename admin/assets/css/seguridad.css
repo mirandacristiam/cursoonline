@@ -1,0 +1,82 @@
+/* /cursoonline/admin/assets/css/seguridad.css */
+/* Seguridad module — EduTech Academy Admin */
+
+/* Alert cards */
+.alerta-card {
+  border-radius: 12px; padding: 1.25rem;
+  border-left: 4px solid; transition: box-shadow 0.2s;
+}
+.alerta-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+.alerta-card.critica  { border-left-color: #DC2626; background: #FEF2F2; }
+.alerta-card.alta     { border-left-color: #F97316; background: #FFF7ED; }
+.alerta-card.media    { border-left-color: #F59E0B; background: #FFFBEB; }
+.alerta-card.baja     { border-left-color: #3B82F6; background: #EFF6FF; }
+.alerta-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.alerta-card.critica .alerta-card-icon  { background: #FEE2E2; color: #DC2626; }
+.alerta-card.alta .alerta-card-icon     { background: #FED7AA; color: #F97316; }
+.alerta-card.media .alerta-card-icon    { background: #FDE68A; color: #D97706; }
+.alerta-card.baja .alerta-card-icon     { background: #DBEAFE; color: #2563EB; }
+.alerta-card .alerta-numero { font-size: 1.75rem; font-weight: 700; line-height: 1; }
+.alerta-card .alerta-label  { font-size: 0.8rem; color: #64748B; }
+
+/* Tablas de logs */
+.log-table td { font-size: 0.85rem; vertical-align: middle; }
+.log-table .badge-log {
+  font-size: 0.7rem; padding: 0.2rem 0.6rem;
+  border-radius: 20px; font-weight: 500;
+}
+.badge-log.exitoso    { background: #D1FAE5; color: #065F46; }
+.badge-log.fallido    { background: #FEE2E2; color: #991B1B; }
+.badge-log.info       { background: #DBEAFE; color: #1E40AF; }
+.badge-log.accion     { background: #E0E7FF; color: #3730A3; }
+.badge-log.error      { background: #FEF3C7; color: #92400E; }
+
+/* Timeline de actividad */
+.timeline {
+  position: relative; padding-left: 2rem;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: #E2E8F0;
+}
+.timeline-item {
+  position: relative; padding-bottom: 1.25rem;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-bullet {
+  position: absolute; left: -1.65rem; top: 0.25rem;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #2563EB; border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #2563EB;
+}
+.timeline-bullet.success { background: #059669; box-shadow: 0 0 0 2px #059669; }
+.timeline-bullet.danger  { background: #DC2626; box-shadow: 0 0 0 2px #DC2626; }
+.timeline-bullet.warning { background: #D97706; box-shadow: 0 0 0 2px #D97706; }
+.timeline-content { font-size: 0.85rem; }
+.timeline-content .tl-time { font-size: 0.75rem; color: #94A3B8; }
+
+/* IP badge */
+.ip-badge {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem; background: #F1F5F9;
+  padding: 0.2rem 0.5rem; border-radius: 6px;
+  color: #1E293B;
+}
+
+/* KPI summary cards */
+.seguridad-kpi {
+  padding: 1.25rem; border-radius: 12px;
+  border: 1px solid #E2E8F0; text-align: center;
+}
+.seguridad-kpi .kpi-number {
+  font-size: 2rem; font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.seguridad-kpi .kpi-label {
+  font-size: 0.75rem; text-transform: uppercase;
+  color: #94A3B8; letter-spacing: 0.04em;
+}

@@ -5,6 +5,8 @@
 // Admin ubicado en: cursoonline/admin/
 // ============================================================
 
+ob_start(); // Output buffering para permitir header() después de includes
+
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../../includes/session.php';
@@ -50,12 +52,15 @@ $ruta_seguridad = $prefix . 'seguridad/index.php';
 $ruta_logout    = BASE_URL . 'auth/logout.php';
 
 // Notificaciones sin leer del admin
-$nb_admin = 0;
-try {
-    $stmt_nb = $pdo->prepare("SELECT COUNT(*) FROM notificaciones WHERE id_usuario_fk = ? AND leida = 0");
-    $stmt_nb->execute([$id_usuario]);
-    $nb_admin = (int)$stmt_nb->fetchColumn();
-} catch (PDOException $e) { /* silencioso */ }
+$stmt_nb = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM notificaciones_usuario
+    WHERE id_usuario_fk = :id
+      AND estado_leida = 0
+      AND estado_activo = 1
+");
+$stmt_nb->execute([':id' => $id_usuario]);
+$nb_admin = (int)$stmt_nb->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -71,6 +76,9 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Admin Stylesheet (Separado) -->
     <link href="<?= $ruta_css ?>" rel="stylesheet">
+    <?php if (isset($page_css)): ?>
+    <link href="<?= $page_css ?>" rel="stylesheet">
+    <?php endif; ?>
 </head>
 <body>
 
@@ -133,13 +141,10 @@ try {
             </li>
         </ul>
 
-        <div class="sidebar-footer">
-            <a href="<?= $ruta_logout ?>" class="sidebar-link text-danger"
-               onclick="return confirm('¿Cerrar sesión del panel de administración?')">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </a>
-        </div>
     </aside>
+
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div class="sidebar-overlay" id="adminSidebarOverlay"></div>
 
     <!-- ── CONTENIDO PRINCIPAL ─────────────────────────────── -->
     <div class="admin-main">
@@ -162,16 +167,39 @@ try {
                           style="font-size:0.6rem;"><?= $nb_admin ?></span>
                     <?php endif; ?>
                 </a>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="user-avatar" style="flex-shrink:0;">
-                        <?= strtoupper(substr($admin_user['primer_nombre'], 0, 1) . substr($admin_user['primer_apellido'], 0, 1)) ?>
-                    </div>
-                    <div>
-                        <div class="fw-bold small"><?= sanitizar_html($admin_user['primer_nombre'] . ' ' . $admin_user['primer_apellido']) ?></div>
-                        <div class="text-muted" style="font-size:0.7rem;">Administrador Total</div>
-                    </div>
+                <!-- Dropdown Perfil / Cerrar Sesión (mismo estilo que student) -->
+                <div class="dropdown">
+                    <button class="btn p-0 border-0 dropdown-toggle d-flex align-items-center gap-2"
+                            type="button" id="adminDropdownBtn" onclick="toggleAdminMenu()"
+                            style="background:none;">
+                        <div class="user-avatar" id="headerAvatar">
+                            <img src="<?= $admin_user['foto_perfil'] ?: ADMIN_FOTO_URL . 'default-avatar.svg' ?>"
+                                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                        </div>
+                        <span class="fw-semibold d-none d-sm-inline text-dark"><?= sanitizar_html(explode(' ', $admin_user['primer_nombre'])[0]) ?></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 border-0" id="adminDropdownMenu">
+                        <li><a class="dropdown-item" href="<?= $prefix ?>perfil.php"><i class="fas fa-user-circle me-2 text-primary"></i>Mi Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="<?= $ruta_logout ?>"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
                 </div>
             </div>
         </header>
+
+        <script>
+        function toggleAdminMenu() {
+            var m = document.getElementById('adminDropdownMenu');
+            if (!m) return;
+            m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+        }
+        document.addEventListener('click', function(e) {
+            var btn = document.getElementById('adminDropdownBtn');
+            var men = document.getElementById('adminDropdownMenu');
+            if (btn && men && men.style.display === 'block' && !btn.contains(e.target) && !men.contains(e.target)) {
+                men.style.display = 'none';
+            }
+        });
+        </script>
 
         <main class="admin-body">

@@ -1,0 +1,163 @@
+/* /cursoonline/admin/assets/css/cursos.css */
+/* Admin Courses — EduTech Academy */
+
+/* Course filter section */
+.filter-section { background: var(--card-bg); }
+
+/* Course card enhancements */
+.curso-card .card-top-bar {
+    position: relative;
+    overflow: hidden;
+}
+.curso-card .card-top-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+}
+
+/* Course form */
+.form-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+/* ── Course detail stats cards (square) ─────────────────── */
+.course-stat-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-align: center;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.course-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+.course-stat-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 0.1rem;
+}
+.course-stat-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* Module accordion */
+.module-accordion .accordion-button {
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.25rem;
+    background: #FAFBFC;
+}
+.module-accordion .accordion-button:not(.collapsed) {
+    background: rgba(37,99,235,0.06);
+    color: var(--admin-blue);
+}
+
+/* Class item */
+.class-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.15s;
+}
+.class-item:hover { background: #F8FAFC; }
+.class-item:last-child { border-bottom: none; }
+
+.class-item .class-number {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--light-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* ── Competency item ────────────────────────────────────── */
+.comp-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.comp-item:last-child { border-bottom: none; }
+.comp-item .comp-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.comp-item .comp-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.comp-item .comp-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* ── Icon picker grid (competencias modal) ─────────────── */
+.icon-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--light-bg);
+}
+.icon-picker-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background: var(--card-bg);
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    transition: all 0.15s;
+}
+.icon-picker-item:hover {
+    border-color: var(--admin-blue);
+    background: rgba(37,99,235,0.06);
+}
+.icon-picker-item.selected {
+    border-color: var(--admin-blue);
+    background: rgba(37,99,235,0.12);
+    color: var(--admin-blue);
+}
+
+/* Modal fixes */
+.modal-content { border-radius: 16px; }
+.modal-header { border-bottom: 1px solid var(--border-color); }
+.modal-footer { border-top: 1px solid var(--border-color); }

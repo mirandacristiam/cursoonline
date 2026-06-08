@@ -1,0 +1,15 @@
+/* /cursoonline/admin/assets/css/dashboard.css */
+/* Dashboard Global — refinements específicos del dashboard */
+
+/* Canvas de gráficos */
+canvas { max-width: 100%; }
+
+/* Contenedores de charts */
+.admin-card-body canvas { display: block; width: 100%; }
+
+/* Hover sutil en filas de curso popular */
+.admin-card-body .d-flex.border-bottom:hover { background: #F8FAFC; }
+
+/* Mini report cards */
+.mini-stat { border-color: #E2E8F0; }
+.mini-stat:hover { border-color: var(--admin-accent); box-shadow: 0 2px 12px rgba(0,0,0,0.06); }

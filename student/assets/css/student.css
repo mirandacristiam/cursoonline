@@ -1,270 +1,144 @@
 /* /cursoonline/student/assets/css/student.css */
 /* ============================================================
- * Estilos del Panel del Estudiante — EduTech Academy
- * Proyecto: EduTech Academy
- * ============================================================ */
-
-:root {
-    --primary-color: #1A3C6E;      /* Azul Oscuro */
-    --secondary-color: #2563EB;    /* Azul Medio */
-    --accent-color: #38BDF8;       /* Azul Claro */
-    --success-color: #10B981;      /* Verde Esmeralda */
-    --warning-color: #F59E0B;      /* Ámbar */
-    --danger-color: #EF4444;       /* Rojo */
-    --dark-bg: #0F172A;            /* Gris Oscuro / Pizarra */
-    --light-bg: #F8FAFC;           /* Fondo de panel */
-    --sidebar-width: 260px;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--light-bg);
-    overflow-x: hidden;
-}
-
-/* ------------------------------------------------------------
- * DISTRIBUCIÓN DEL DASHBOARD (SIDEBAR & MAIN CONTENT)
- * ------------------------------------------------------------ */
-.dashboard-wrapper {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* Sidebar Estilo */
-.sidebar {
-    width: var(--sidebar-width);
-    background-color: var(--dark-bg);
-    color: #F8FAFC;
-    flex-shrink: 0;
-    transition: var(--transition-smooth);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.sidebar-brand {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: #FFFFFF;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sidebar-brand i {
-    color: var(--accent-color);
-}
-
-.sidebar-menu {
-    list-style: none;
-    padding: 1.5rem 0;
-    margin: 0;
-    flex-grow: 1;
-}
-
-.sidebar-item {
-    margin-bottom: 0.25rem;
-}
-
-.sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.8rem 1.5rem;
-    color: #94A3B8;
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition-smooth);
-    border-left: 4px solid transparent;
-}
-
-.sidebar-link:hover, .sidebar-item.active .sidebar-link {
-    color: #FFFFFF;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.sidebar-item.active .sidebar-link {
-    border-left-color: var(--accent-color);
-    background-color: rgba(56, 189, 248, 0.08);
-}
-
-.sidebar-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Contenedor de Contenido Principal */
-.main-content {
-    flex-grow: 1;
-    min-width: 0; /* Evita desbordamiento de flexbox */
-    display: flex;
-    flex-direction: column;
-}
-
-/* Top Navbar */
-.top-navbar {
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #E2E8F0;
-    padding: 0.8rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 90;
-}
-
-.content-body {
-    padding: 2rem;
-    flex-grow: 1;
-}
-
-/* ------------------------------------------------------------
- * TARJETAS Y COMPONENTES
- * ------------------------------------------------------------ */
-.stat-card {
-    background-color: #FFFFFF;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-    border: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-}
-
-.stat-icon-blue { background-color: rgba(37, 99, 235, 0.1); color: var(--secondary-color); }
-.stat-icon-green { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
-.stat-icon-amber { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
-.stat-icon-red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
-
-.card-custom {
-    background-color: #FFFFFF;
-    border-radius: 16px;
-    border: 1px solid #E2E8F0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
-    overflow: hidden;
-}
-
-.card-header-custom {
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #E2E8F0;
-    padding: 1.25rem 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.card-body-custom {
-    padding: 1.5rem;
-}
-
-/* ------------------------------------------------------------
- * COMPONENTE VER CLASES (VIDEO)
- * ------------------------------------------------------------ */
-.video-container {
-    position: relative;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.video-container iframe, .video-container video {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-}
-
-.class-list-group {
-    max-height: 480px;
-    overflow-y: auto;
-}
-
-.class-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem 1rem;
-    border-bottom: 1px solid #F1F5F9;
-    transition: var(--transition-smooth);
-    text-decoration: none;
-    color: var(--dark-text);
-}
-
-.class-item:hover, .class-item.active {
-    background-color: rgba(37, 99, 235, 0.05);
-}
-
-.class-item.active {
-    border-left: 4px solid var(--secondary-color);
-}
-
-/* ------------------------------------------------------------
- * NOTIFICACIONES Y OTROS DETALLES
- * ------------------------------------------------------------ */
-.notification-badge-dot {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
-    background-color: var(--danger-color);
-    border-radius: 50%;
-}
-
-.progress-bar-custom {
-    height: 8px;
-    border-radius: 4px;
-    background-color: #E2E8F0;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    background-color: var(--success-color);
-    transition: width 0.5s ease-in-out;
-}
-
-.badge-custom {
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.badge-active { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
-.badge-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
-.badge-cancelled { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
-
-/* responsive toggle */
-@media (max-width: 991.98px) {
-    .sidebar {
-        margin-left: calc(-1 * var(--sidebar-width));
-    }
-    .sidebar.active {
-        margin-left: 0;
-    }
-}
-
-/*
- * ============================================================
  * RESUMEN DEL ARCHIVO: /cursoonline/student/assets/css/student.css
  * ============================================================
  * Hoja de estilos del panel estudiantil. Provee la estructura
  * grid, el sidebar oscuro y responsive, y tarjetas académicas.
  * ============================================================
  */
+
+:root {
+    --sidebar-w:   260px;
+    --navbar-h:    64px;
+    --border-clr:  #E2E8F0;
+    --light-bg:    #F1F5F9;
+}
+
+/* ── Evitar scroll del body/html ──────────────────────── */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Sidebar (siempre fijo) ──────────────────────────── */
+.sidebar {
+    width: var(--sidebar-w);
+    background: #0F172A;
+    color: #CBD5E1;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1050;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-brand {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #60A5FA;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 1px;
+}
+
+.sidebar-brand i { font-size: 1.3rem; }
+
+.sidebar-menu { list-style: none; padding: 0.25rem 0; }
+.sidebar-item { padding: 0 0.75rem; margin-bottom: 2px; }
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.45);
+    transition: color 0.2s;
+}
+
+.sidebar-link:hover { background: rgba(37,99,235,0.15); color: #fff; }
+.sidebar-link:hover i { color: #60A5FA; }
+.sidebar-item.active .sidebar-link { background: rgba(37,99,235,0.2); color: #fff; font-weight: 600; }
+.sidebar-item.active .sidebar-link i { color: #93C5FD; }
+
+/* ── Top navbar (siempre fijo arriba a la derecha) ───── */
+.top-navbar {
+    position: fixed;
+    top: 0; left: var(--sidebar-w); right: 0;
+    height: var(--navbar-h);
+    background: #fff;
+    border-bottom: 1px solid var(--border-clr);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 900;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* ── Main content (desplazado para dejar espacio) ────── */
+.main-content {
+    margin: var(--navbar-h) 0 0 var(--sidebar-w);
+    height: calc(100vh - var(--navbar-h));
+}
+
+.content-body {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1.75rem;
+    background: var(--light-bg);
+}
+
+/* ── Transition rotate (chevron en collapses) ────────── */
+.transition-rotate {
+    transition: transform 0.3s ease;
+}
+[aria-expanded="true"] .transition-rotate,
+.collapse.show + .transition-rotate,
+.transition-rotate.rotated {
+    transform: rotate(90deg);
+}
+
+/* ── Alertas ocultas por defecto ─────────────────────── */
+.alert-custom { display: none; }
+
+/* ── Overlay móvil ───────────────────────────────────── */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1049;
+}
+.sidebar-overlay.show,
+.sidebar-overlay.active { display: block; }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 991.98px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-overlay.active { display: block; }
+    .top-navbar { left: 0 !important; }
+    .main-content { margin: var(--navbar-h) 0 0 0; }
+}

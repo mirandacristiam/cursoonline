@@ -161,13 +161,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$tiene_pendiente) {
                 $stmt_ins_curso = $pdo->prepare("
                     INSERT INTO inscripciones
                         (id_usuario_fk, id_curso_fk, fecha_inscripcion,
-                         monto_pagado, estado_inscripcion, porcentaje_progreso, estado_activo)
+                         monto_pagado, estado_inscripcion, porcentaje_progreso, estado_activo, visible_estudiante)
                     VALUES
-                        (:usr, :cur, NOW(), :monto, 'suspendida', 0.00, 1)
+                        (:usr, :cur, NOW(), :monto, 'suspendida', 0.00, 1, 1)
                     ON DUPLICATE KEY UPDATE
-                        monto_pagado       = :monto2,
-                        estado_inscripcion = 'suspendida',
-                        fecha_modificacion = NOW()
+                        monto_pagado        = :monto2,
+                        estado_inscripcion  = 'suspendida',
+                        porcentaje_progreso = 0.00,
+                        estado_activo       = 1,
+                        visible_estudiante  = 1,
+                        fecha_modificacion  = NOW()
                 ");
                 $stmt_ins_curso->execute([
                     ':usr'   => $id_usuario,
@@ -210,6 +213,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$tiene_pendiente) {
                 }
 
                 // Curso de pago → solicitud enviada, espera aprobación
+                // Notificar a los administradores
+                try {
+                    $pdo->beginTransaction();
+                    $stmt_admins = $pdo->query("SELECT id_usuario_pk FROM usuarios WHERE id_rol_fk = " . ROL_ADMIN_TOTAL . " AND estado_activo = 1");
+                    $admins = $stmt_admins->fetchAll(PDO::FETCH_COLUMN);
+                    if (!empty($admins)) {
+                        $pdo->prepare("
+                            INSERT INTO notificaciones (titulo_notificacion, mensaje_notificacion, tipo_notificacion, id_usuario_emisor_fk, url_accion, estado_activo)
+                            VALUES ('Nueva solicitud de inscripción', :msg, 'info', :usr, 'admin/pagos/index.php', 1)
+                        ")->execute([
+                            ':msg' => 'El estudiante #' . $id_usuario . ' solicitó inscripción en "' . sanitizar_html($curso['titulo_curso']) . '". Revisa y aprueba el pago.',
+                            ':usr' => $id_usuario,
+                        ]);
+                        $id_notif_adm = (int)$pdo->lastInsertId();
+                        if ($id_notif_adm > 0) {
+                            foreach ($admins as $admin_id) {
+                                $pdo->prepare("
+                                    INSERT INTO notificaciones_usuario (id_notificacion_fk, id_usuario_fk, estado_leida, estado_activo)
+                                    VALUES (:notif, :usr, 0, 1)
+                                ")->execute([':notif' => $id_notif_adm, ':usr' => $admin_id]);
+                            }
+                        }
+                    }
+                    $pdo->commit();
+                } catch (Exception $e_notif) {
+                    if ($pdo->inTransaction()) $pdo->rollBack();
+                    error_log('Error notificando admin en inscripcion: ' . $e_notif->getMessage());
+                }
                 $success_msg    = 'solicitud_enviada';
                 $tiene_pendiente = true;
                 $id_tx_pendiente = $id_tx_nuevo;
@@ -300,7 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$tiene_pendiente) {
 
             <!-- Portada -->
             <div style="position:relative;padding-top:52%;overflow:hidden;background:#0F172A;">
-                <img src="<?= $curso['imagen_portada'] ?: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80' ?>"
+                <img src="<?= $curso['imagen_portada'] ? BASE_URL . $curso['imagen_portada'] : 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80' ?>"
                      alt="<?= sanitizar_html($curso['titulo_curso']) ?>"
                      style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
                 <span class="badge position-absolute"

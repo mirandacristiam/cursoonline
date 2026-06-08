@@ -27,6 +27,17 @@ if (!$profesor) {
     exit();
 }
 
+// Obtener número de notificaciones no leídas
+$stmt_notif = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM notificaciones_usuario
+    WHERE id_usuario_fk = :id
+      AND estado_leida = 0
+      AND estado_activo = 1
+");
+$stmt_notif->execute([':id' => $id_usuario]);
+$notificaciones_no_leidas = (int)$stmt_notif->fetchColumn();
+
 $script_name = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
@@ -73,30 +84,7 @@ $script_name = basename($_SERVER['PHP_SELF']);
                         <i class="fas fa-check-double"></i> Calificar Actividades
                     </a>
                 </li>
-                <li class="sidebar-item <?= $script_name === 'notificaciones.php' ? 'active' : '' ?>">
-                    <a href="notificaciones.php" class="sidebar-link">
-                        <i class="fas fa-bell"></i> Notificaciones
-                        <?php
-                        $stmt_nb = $pdo->prepare("SELECT COUNT(*) FROM notificaciones WHERE id_usuario_fk = ? AND leida = 0");
-                        $stmt_nb->execute([$id_usuario]);
-                        $nb_count = (int)$stmt_nb->fetchColumn();
-                        if ($nb_count > 0): ?>
-                            <span class="badge bg-danger rounded-pill ms-auto" style="font-size:0.65rem;"><?= $nb_count ?></span>
-                        <?php endif; ?>
-                    </a>
-                </li>
-                <li class="sidebar-item <?= $script_name === 'perfil.php' ? 'active' : '' ?>">
-                    <a href="perfil.php" class="sidebar-link">
-                        <i class="fas fa-user-tie"></i> Mi Perfil
-                    </a>
-                </li>
             </ul>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="sidebar-link text-danger" id="btnLogout">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </a>
-            </div>
         </aside>
 
         <!-- CONTENIDO PRINCIPAL -->
@@ -109,9 +97,32 @@ $script_name = basename($_SERVER['PHP_SELF']);
                 <div>
                     <h2 class="h5 fw-bold text-muted mb-0">Portal Docente — EduTech Academy</h2>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="fw-bold text-muted small">Prof: <?= sanitizar_html($profesor['primer_nombre'] . ' ' . $profesor['primer_apellido']) ?></span>
-                    <i class="fas fa-user-tie text-success fs-5"></i>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Notificaciones -->
+                    <a href="notificaciones.php" class="position-relative text-muted" style="text-decoration:none;">
+                        <i class="fas fa-bell fs-5"></i>
+                        <?php if ($notificaciones_no_leidas > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                  style="font-size:0.6rem;"><?= $notificaciones_no_leidas ?></span>
+                        <?php endif; ?>
+                    </a>
+                    <!-- Dropdown Perfil / Cerrar Sesión -->
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 dropdown-toggle d-flex align-items-center gap-2"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                style="background:none;">
+                            <img src="<?= $profesor['foto_perfil'] ?: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80' ?>"
+                                 alt="Avatar"
+                                 class="rounded-circle border border-2 border-success"
+                                 style="width:36px;height:36px;object-fit:cover;cursor:pointer;">
+                            <span class="fw-bold text-muted small d-none d-sm-inline">Prof. <?= sanitizar_html($profesor['primer_nombre']) ?></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 border-0">
+                            <li><a class="dropdown-item" href="perfil.php"><i class="fas fa-user-tie me-2 text-success"></i>Mi Perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../auth/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
                 </div>
             </header>
             

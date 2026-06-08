@@ -17,14 +17,39 @@ define('SITE_ADDRESS',       'Colombia');
 define('SITE_AUTHOR',        'EduTech Academy');
 
 // ============================================================
-// RUTAS DEL SISTEMA
+// RUTAS DEL SISTEMA (auto-detectadas)
 // ============================================================
-define('BASE_URL',           'http://localhost/cursoonline/');
-define('ADMIN_URL',          'http://localhost/admin/');
-define('BASE_PATH',          realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR);
+$__protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$__host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$__path     = $_SERVER['SCRIPT_NAME'] ?? '/';
+$__parts    = explode('/', trim($__path, '/'));
+$__basePath = '';
+$__found    = false;
+$__known    = ['admin', 'config', 'auth', 'database', 'student', 'api', 'includes', 'assets'];
+foreach ($__parts as $__i => $__p) {
+    if (in_array($__p, $__known)) {
+        $__basePath = '/' . implode('/', array_slice($__parts, 0, $__i));
+        $__found = true;
+        break;
+    }
+}
+if (!$__found) {
+    $__basePath = (!empty($__parts[0]) && substr($__parts[0], -4) !== '.php') ? '/' . $__parts[0] : '';
+}
+$__baseUrl = rtrim($__protocol . '://' . $__host . $__basePath, '/') . '/';
+define('BASE_URL',  $__baseUrl);
+define('ADMIN_URL', BASE_URL . 'admin/');
+define('BASE_PATH', realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR);
+unset($__protocol, $__host, $__path, $__parts, $__basePath, $__found, $__known, $__i, $__p, $__baseUrl);
 define('ASSETS_URL',         BASE_URL . 'assets/');
 define('UPLOADS_PATH',       BASE_PATH . 'assets/images/uploads/');
 define('UPLOADS_URL',        BASE_URL . 'assets/images/uploads/');
+
+// Rutas para fotos de perfil por rol
+define('ADMIN_FOTO_PATH',    BASE_PATH . 'admin' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'foto_perfil' . DIRECTORY_SEPARATOR);
+define('ADMIN_FOTO_URL',     ADMIN_URL . 'assets/images/foto_perfil/');
+define('STUDENT_FOTO_PATH',  BASE_PATH . 'student' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'foto_perfil' . DIRECTORY_SEPARATOR);
+define('STUDENT_FOTO_URL',   BASE_URL . 'student/assets/images/foto_perfil/');
 
 // ============================================================
 // ROLES DEL SISTEMA

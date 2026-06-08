@@ -5,8 +5,8 @@
 // ============================================================
 
 $page_title = 'Crear Usuario';
+$page_css    = '../assets/css/usuarios.css';
 require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../../cursoonline/includes/csrf.php';
 
 $msg_ok = $msg_err = '';
 $form = ['primer_nombre' => '', 'segundo_nombre' => '', 'primer_apellido' => '',

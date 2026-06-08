@@ -25,7 +25,6 @@
 | Stored Procedures para procesos críticos | ✅ Confirmado |
 | Paleta: Azul, Azul Claro, Blanco, Gris | ✅ Confirmado |
 | AppServer / MySQL — Usuario: root, Pass: 123456789 | ✅ Confirmado |
-| Carpeta `admin` FUERA de la raíz del proyecto | ✅ Confirmado |
 | Contraseña de prueba para todos los roles: `abc12345` | ✅ Confirmado |
 
 ---
@@ -95,8 +94,7 @@ PÚBLICO (Internet)
       │     └── calificaciones.php
       │
       └── /cursos/                ← Páginas públicas de detalle de cursos
-
-[admin/] ← FUERA de cursoonline/ (seguridad)
+      ├── /admin/
       │
       ├── index.php               ← Dashboard Admin Total
       ├── .htaccess

@@ -9,6 +9,12 @@ $(document).ready(function() {
     // --- 1. Toggle Sidebar en Móviles ---
     $('#sidebarCollapse').on('click', function() {
         $('.sidebar').toggleClass('active');
+        $('#sidebarOverlay').toggleClass('active');
+    });
+
+    $('#sidebarOverlay').on('click', function() {
+        $('.sidebar').removeClass('active');
+        $(this).removeClass('active');
     });
 
     // --- 2. Simulación de Progreso de Video para Clases ---
@@ -61,7 +67,7 @@ $(document).ready(function() {
         btn.prop('disabled', true).text('Guardando...');
 
         $.ajax({
-            url: '../api/perfil.php',
+            url: '../api/perfil_estudiante.php',
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
@@ -84,7 +90,95 @@ $(document).ready(function() {
         });
     });
 
-    // --- 4. Procesar Cambio de Contraseña ---
+    // --- 4. Subir Foto de Perfil ---
+    $('#fotoForm').on('submit', function(e) {
+        e.preventDefault();
+
+        if (!$('#fotoInput')[0].files.length) {
+            $('#alert-foto-error').html('<i class="fas fa-exclamation-circle me-2"></i> Selecciona un archivo de imagen.').slideDown();
+            return;
+        }
+
+        const formData = new FormData(this);
+        const btn = $('#btnSubirFoto');
+        const alertSuccess = $('#alert-foto-success');
+        const alertError = $('#alert-foto-error');
+
+        alertSuccess.slideUp();
+        alertError.slideUp();
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Subiendo...');
+
+        $.ajax({
+            url: '../api/perfil_estudiante.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                btn.prop('disabled', false).html('<i class="fas fa-upload me-1"></i>Subir Foto');
+                if (response.estado === 'ok') {
+                    $('#fotoPreview').attr('src', response.foto_url + '?t=' + Date.now());
+                    $('#headerAvatar').attr('src', response.foto_url + '?t=' + Date.now());
+                    alertSuccess.html(`<i class="fas fa-check-circle me-2"></i> ${response.mensaje}`).slideDown();
+                } else {
+                    alertError.html(`<i class="fas fa-exclamation-circle me-2"></i> ${response.mensaje}`).slideDown();
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false).html('<i class="fas fa-upload me-1"></i>Subir Foto');
+                let msg = 'Error interno del servidor.';
+                if (xhr.responseJSON && xhr.responseJSON.mensaje) {
+                    msg = xhr.responseJSON.mensaje;
+                }
+                alertError.html(`<i class="fas fa-exclamation-circle me-2"></i> ${msg}`).slideDown();
+            }
+        });
+    });
+
+    // --- 5. Eliminar Foto de Perfil ---
+    $('#btnEliminarFoto').on('click', function() {
+        if (!confirm('¿Estás seguro de eliminar tu foto de perfil?')) return;
+
+        const btn = $(this);
+        const alertSuccess = $('#alert-foto-success');
+        const alertError = $('#alert-foto-error');
+
+        alertSuccess.slideUp();
+        alertError.slideUp();
+        btn.prop('disabled', true).text('Eliminando...');
+
+        const csrfToken = $('#btnEliminarFoto').data('csrf-token');
+
+        $.ajax({
+            url: '../api/perfil_estudiante.php',
+            type: 'POST',
+            data: { accion: 'eliminar_foto', csrf_token: csrfToken },
+            dataType: 'json',
+            success: function(response) {
+                btn.prop('disabled', false).html('<i class="fas fa-trash-alt me-1"></i>Eliminar Foto');
+                if (response.estado === 'ok') {
+                    var def = 'assets/images/foto_perfil/default-avatar.svg';
+                    $('#fotoPreview').attr('src', def);
+                    $('#headerAvatar').attr('src', def);
+                    alertSuccess.html(`<i class="fas fa-check-circle me-2"></i> ${response.mensaje}`).slideDown();
+                    btn.remove();
+                } else {
+                    alertError.html(`<i class="fas fa-exclamation-circle me-2"></i> ${response.mensaje}`).slideDown();
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false).html('<i class="fas fa-trash-alt me-1"></i>Eliminar Foto');
+                let msg = 'Error interno del servidor.';
+                if (xhr.responseJSON && xhr.responseJSON.mensaje) {
+                    msg = xhr.responseJSON.mensaje;
+                }
+                alertError.html(`<i class="fas fa-exclamation-circle me-2"></i> ${msg}`).slideDown();
+            }
+        });
+    });
+
+    // --- 6. Procesar Cambio de Contraseña ---
     $('#passwordForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -103,7 +197,7 @@ $(document).ready(function() {
         btn.prop('disabled', true).text('Actualizando...');
 
         $.ajax({
-            url: '../api/perfil.php',
+            url: '../api/perfil_estudiante.php',
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',

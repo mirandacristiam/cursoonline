@@ -1,0 +1,34 @@
+/* /cursoonline/admin/assets/css/pagos.css */
+/* Pagos module — EduTech Academy Admin */
+
+.transaction-status {
+  display: inline-block; padding: 0.25rem 0.75rem;
+  border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
+.transaction-status.pendiente  { background: #FEF3C7; color: #92400E; }
+.transaction-status.aprobada   { background: #D1FAE5; color: #065F46; }
+.transaction-status.rechazada  { background: #FEE2E2; color: #991B1B; }
+.transaction-status.cancelada  { background: #E2E8F0; color: #475569; }
+
+#modalDetalle body {
+  background: #0F172A; color: #F1F5F9;
+}
+
+#jumbotron-transaccion {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+#jumbotron-transaccion h1 small { font-weight: 400; font-size: 1rem; }
+
+#jumbotron-transaccion .dl-horizontal dt {
+  color: #94A3B8;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#jumbotron-transaccion .dl-horizontal dd {
+  color: #E2E8F0;
+  font-weight: 500;
+}

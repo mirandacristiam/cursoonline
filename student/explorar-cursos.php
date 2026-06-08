@@ -40,17 +40,17 @@ $stmt_cursos = $pdo->prepare("
            c.precio, c.precio_con_descuento, c.nivel_dificultad,
            c.total_horas, c.numero_estudiantes, c.calificacion_promedio,
            cat.nombre_categoria, cat.icono_categoria, cat.color_categoria,
-           u.primer_nombre AS prof_nombre, u.primer_apellido AS prof_apellido,
-           -- Verificar si el estudiante ya está inscrito
-           (SELECT COUNT(*) FROM inscripciones i
-            WHERE i.id_curso_fk = c.id_curso_pk
-              AND i.id_usuario_fk = :id_user
-              AND i.estado_inscripcion IN ('activa','completada')
-              AND i.estado_activo = 1) AS ya_inscrito
+           u.primer_nombre AS prof_nombre, u.primer_apellido AS prof_apellido
     FROM cursos c
     JOIN categorias_curso cat ON c.id_categoria_fk = cat.id_categoria_pk
     LEFT JOIN usuarios u ON c.id_profesor_fk = u.id_usuario_pk
     $where
+    AND NOT EXISTS (
+        SELECT 1 FROM inscripciones i
+        WHERE i.id_curso_fk = c.id_curso_pk
+          AND i.id_usuario_fk = :id_user
+          AND i.estado_activo = 1
+    )
     ORDER BY c.calificacion_promedio DESC, c.titulo_curso ASC
 ");
 $params[':id_user'] = $id_usuario;
@@ -160,8 +160,6 @@ $niveles = ['Principiante', 'Intermedio', 'Avanzado'];
                         ? (float)$curso['precio_con_descuento'] : $precio_orig;
         $tiene_desc   = $precio_final < $precio_orig && $precio_orig > 0;
         $pct_desc     = $tiene_desc ? round((1 - $precio_final / $precio_orig) * 100) : 0;
-        $ya_inscrito  = (int)($curso['ya_inscrito'] ?? 0) > 0;
-
         $nivel_map = [
             'Principiante' => ['color' => '#16A34A', 'bg' => '#DCFCE7'],
             'Intermedio'   => ['color' => '#2563EB', 'bg' => '#DBEAFE'],
@@ -178,7 +176,7 @@ $niveles = ['Principiante', 'Intermedio', 'Avanzado'];
 
             <!-- Imagen portada -->
             <div style="position:relative;padding-top:52%;overflow:hidden;background:#0F172A;">
-                <img src="<?= $curso['imagen_portada'] ?: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80' ?>"
+                <img src="<?= $curso['imagen_portada'] ? BASE_URL . $curso['imagen_portada'] : 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80' ?>"
                      alt="<?= sanitizar_html($curso['titulo_curso']) ?>"
                      style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
                 <!-- Badge categoría -->
@@ -192,13 +190,6 @@ $niveles = ['Principiante', 'Intermedio', 'Avanzado'];
                 <span class="badge bg-danger position-absolute"
                       style="top:.75rem;right:.75rem;font-size:.72rem;">
                     -<?= $pct_desc ?>% OFF
-                </span>
-                <?php endif; ?>
-                <!-- Badge inscrito -->
-                <?php if ($ya_inscrito): ?>
-                <span class="badge bg-success position-absolute"
-                      style="bottom:.75rem;right:.75rem;font-size:.72rem;">
-                    <i class="fas fa-check me-1"></i>Inscrito
                 </span>
                 <?php endif; ?>
             </div>
@@ -249,30 +240,15 @@ $niveles = ['Principiante', 'Intermedio', 'Avanzado'];
 
                 <!-- Botones de acción -->
                 <div class="d-grid gap-2 mt-auto">
-                    <?php if ($ya_inscrito): ?>
-                        <a href="mis-cursos.php"
-                           class="btn btn-success rounded-3"
-                           id="btn-ver-inscrito-<?= $curso['id_curso_pk'] ?>">
-                            <i class="fas fa-play me-2"></i>Continuar Aprendiendo
-                        </a>
-                        <a href="../cursos/detalle.php?id=<?= $curso['id_curso_pk'] ?>"
-                           class="btn btn-outline-primary rounded-3"
-                           id="btn-detalle-inscrito-<?= $curso['id_curso_pk'] ?>">
-                            <i class="fas fa-info-circle me-1"></i>Ver detalle
-                        </a>
-                    <?php else: ?>
-                        <a href="../cursos/detalle.php?id=<?= $curso['id_curso_pk'] ?>"
-                           class="btn btn-primary rounded-3"
-                           id="btn-ver-curso-<?= $curso['id_curso_pk'] ?>">
-                            <i class="fas fa-eye me-2"></i>Ver Curso
-                        </a>
-                        <a href="inscripcion.php?curso=<?= $curso['id_curso_pk'] ?>"
-                           class="btn btn-outline-primary rounded-3"
-                           id="btn-inscribir-<?= $curso['id_curso_pk'] ?>">
-                            <i class="fas fa-graduation-cap me-2"></i>
-                            <?= $precio_final > 0 ? 'Inscribirme' : 'Inscribirme Gratis' ?>
-                        </a>
-                    <?php endif; ?>
+                    <a href="detalle-curso.php?id=<?= $curso['id_curso_pk'] ?>"
+                       class="btn btn-primary rounded-3">
+                        <i class="fas fa-eye me-2"></i>Ver Curso
+                    </a>
+                    <a href="inscripcion.php?curso=<?= $curso['id_curso_pk'] ?>"
+                       class="btn btn-outline-primary rounded-3">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        <?= $precio_final > 0 ? 'Inscribirme' : 'Inscribirme Gratis' ?>
+                    </a>
                 </div>
             </div>
         </article>

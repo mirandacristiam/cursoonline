@@ -14,6 +14,7 @@ $stmt_enrolled = $pdo->prepare("
     SELECT COUNT(*) 
     FROM inscripciones 
     WHERE id_usuario_fk = :id_user 
+      AND estado_inscripcion IN ('activa','completada')
       AND estado_activo = 1
 ");
 $stmt_enrolled->execute([':id_user' => $id_usuario]);
@@ -43,16 +44,38 @@ $stmt_avg->execute([':id_user' => $id_usuario]);
 $promedio_notas = $stmt_avg->fetchColumn();
 $promedio_notas = $promedio_notas !== null ? (float)$promedio_notas : 0.0;
 
-// Total invertido en cursos (COP)
+// Total invertido en cursos APROBADOS (COP)
 $stmt_spent = $pdo->prepare("
-    SELECT SUM(monto_pagado) 
-    FROM inscripciones 
-    WHERE id_usuario_fk = :id_user 
-      AND estado_activo = 1
+    SELECT COALESCE(SUM(monto_pagado), 0)
+    FROM inscripciones i
+    WHERE i.id_usuario_fk = :id_user
+      AND i.estado_activo = 1
+      AND i.estado_inscripcion IN ('activa','completada')
 ");
 $stmt_spent->execute([':id_user' => $id_usuario]);
-$total_invertido = $stmt_spent->fetchColumn();
-$total_invertido = $total_invertido !== null ? (float)$total_invertido : 0.0;
+$total_invertido = (float)$stmt_spent->fetchColumn();
+
+// Total pendiente de aprobación (solicitudes en proceso)
+$stmt_pending_amount = $pdo->prepare("
+    SELECT COALESCE(SUM(t.monto_total), 0)
+    FROM transacciones_pago t
+    WHERE t.id_usuario_fk = :id_user
+      AND t.estado_transaccion = 'pendiente'
+      AND t.estado_activo = 1
+");
+$stmt_pending_amount->execute([':id_user' => $id_usuario]);
+$total_pendiente = (float)$stmt_pending_amount->fetchColumn();
+
+// Conteo de cursos pendientes de aprobación
+$stmt_pending_count = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM inscripciones
+    WHERE id_usuario_fk = :id_user
+      AND estado_inscripcion = 'suspendida'
+      AND estado_activo = 1
+");
+$stmt_pending_count->execute([':id_user' => $id_usuario]);
+$total_pendientes_count = (int)$stmt_pending_count->fetchColumn();
 
 // --- 2. CONSULTA DE CURSOS RECIENTES ---
 $stmt_recent = $pdo->prepare("
@@ -62,6 +85,7 @@ $stmt_recent = $pdo->prepare("
     JOIN cursos c ON i.id_curso_fk = c.id_curso_pk
     JOIN categorias_curso cat ON c.id_categoria_fk = cat.id_categoria_pk
     WHERE i.id_usuario_fk = :id_user 
+      AND i.estado_inscripcion IN ('activa','completada')
       AND i.estado_activo = 1
     ORDER BY i.fecha_inscripcion DESC
     LIMIT 3
@@ -137,6 +161,27 @@ $cursos_recientes = $stmt_recent->fetchAll();
             </div>
         </article>
     </div>
+    <!-- Por Aprobación -->
+    <div class="col-md-3 col-sm-6">
+        <article class="stat-card" style="border-left:4px solid #F59E0B;">
+            <div>
+                <p class="text-muted small fw-semibold text-uppercase m-0">Por Aprobación</p>
+                <h3 class="fw-bold m-0 mt-1">
+                    <?php if ($total_pendiente > 0): ?>
+                    $<?= number_format($total_pendiente, 0, ',', '.') ?>
+                    <?php else: ?>
+                    $0
+                    <?php endif; ?>
+                </h3>
+                <?php if ($total_pendientes_count > 0): ?>
+                <small class="text-warning fw-semibold"><?= $total_pendientes_count ?> curso<?= $total_pendientes_count !== 1 ? 's' : '' ?></small>
+                <?php endif; ?>
+            </div>
+            <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+        </article>
+    </div>
 </div>
 
 <div class="row g-4">
@@ -161,7 +206,7 @@ $cursos_recientes = $stmt_recent->fetchAll();
                         <?php foreach ($cursos_recientes as $item): ?>
                             <div class="col-12">
                                 <div class="d-flex align-items-center gap-3 p-3 border border-1 rounded-3">
-                                    <img src="<?= $item['imagen_portada'] ?: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80' ?>" 
+                                    <img src="<?= $item['imagen_portada'] ? BASE_URL . $item['imagen_portada'] : 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80' ?>" 
                                          alt="Portada" 
                                          class="rounded" 
                                          style="width: 80px; height: 50px; object-fit: cover;">

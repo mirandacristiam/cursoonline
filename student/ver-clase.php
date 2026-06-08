@@ -23,6 +23,7 @@ $stmt_ins = $pdo->prepare("
     JOIN cursos c ON i.id_curso_fk = c.id_curso_pk
     WHERE i.id_inscripcion_pk = :id_ins 
       AND i.id_usuario_fk = :id_user 
+      AND i.estado_inscripcion IN ('activa','completada')
       AND i.estado_activo = 1
 ");
 $stmt_ins->execute([

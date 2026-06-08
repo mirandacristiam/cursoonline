@@ -15,6 +15,12 @@ iniciar_sesion_segura();
 $pdo      = obtenerConexion();
 $id_curso = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Redirigir estudiantes al detalle dentro del panel
+if ($id_curso > 0 && isset($_SESSION['id_usuario'], $_SESSION['id_rol']) && (int)$_SESSION['id_rol'] === ROL_ESTUDIANTE) {
+    header("Location: ../student/detalle-curso.php?id=$id_curso");
+    exit();
+}
+
 if (!$id_curso) {
     header('Location: ../index.php#cursos');
     exit();

@@ -6,6 +6,8 @@
 // ============================================================
 
 $page_title = 'Gestión de Pagos';
+$page_css   = '../assets/css/pagos.css';
+$page_script = '../assets/js/pagos.js';
 require_once __DIR__ . '/../includes/header.php';
 
 // ── Filtros ────────────────────────────────────────────────────
@@ -273,19 +275,28 @@ unset($_SESSION['admin_msg_ok'], $_SESSION['admin_msg_err']);
                     <td class="py-3 text-center">
                         <?php if ($tx['estado_transaccion'] === 'pendiente'): ?>
                         <div class="d-flex justify-content-center gap-2">
-                            <!-- Botón Aprobar -->
                             <button type="button"
                                     class="btn btn-success btn-sm rounded-3 px-3"
-                                    onclick="abrirModal('aprobar', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')"
-                                    id="btn-aprobar-<?= $tx['id_transaccion_pk'] ?>">
+                                    onclick="abrirModal('aprobar', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')">
                                 <i class="fas fa-check me-1"></i>Aprobar
                             </button>
-                            <!-- Botón Rechazar -->
                             <button type="button"
                                     class="btn btn-danger btn-sm rounded-3 px-3"
-                                    onclick="abrirModal('rechazar', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')"
-                                    id="btn-rechazar-<?= $tx['id_transaccion_pk'] ?>">
+                                    onclick="abrirModal('rechazar', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')">
                                 <i class="fas fa-times me-1"></i>Rechazar
+                            </button>
+                        </div>
+                        <?php elseif ($tx['estado_transaccion'] === 'rechazada'): ?>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button"
+                                    class="btn btn-success btn-sm rounded-3 px-3"
+                                    onclick="abrirModal('reaprobar', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')">
+                                <i class="fas fa-check me-1"></i>Aprobar
+                            </button>
+                            <button type="button"
+                                    class="btn btn-secondary btn-sm rounded-3 px-3"
+                                    onclick="abrirModal('cancelar_def', <?= $tx['id_transaccion_pk'] ?>, '<?= addslashes(sanitizar_html($tx['nombre_estudiante'])) ?>', '<?= addslashes(sanitizar_html($tx['titulo_curso'])) ?>', '<?= MONEDA_SIMBOLO . number_format((float)$tx['monto_total'], 0, ',', '.') ?> COP')">
+                                <i class="fas fa-ban me-1"></i>Cancelar
                             </button>
                         </div>
                         <?php else: ?>
@@ -350,44 +361,7 @@ unset($_SESSION['admin_msg_ok'], $_SESSION['admin_msg_err']);
     </div>
 </div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-var modalEl = document.getElementById('modalProcesar');
-var bsModal = new bootstrap.Modal(modalEl);
-
-function abrirModal(accion, txId, estudiante, curso, monto) {
-    document.getElementById('modalTxId').value    = txId;
-    document.getElementById('modalAccion').value  = accion;
-    document.getElementById('modalEstudiante').textContent = estudiante;
-    document.getElementById('modalCurso').textContent      = curso;
-    document.getElementById('modalMonto').textContent      = monto;
-    document.getElementById('modalObs').value = '';
-
-    var header = document.getElementById('modalHeader');
-    var btn    = document.getElementById('modalBtnConfirm');
-    var label  = document.getElementById('labelObs');
-    var title  = document.getElementById('modalProcesarLabel');
-
-    if (accion === 'aprobar') {
-        header.style.background  = 'linear-gradient(135deg,#ECFDF5,#D1FAE5)';
-        title.textContent        = '✅ Aprobar Pago';
-        title.style.color        = '#14532D';
-        btn.className            = 'btn btn-success rounded-3 px-4 fw-bold';
-        btn.innerHTML            = '<i class="fas fa-check me-2"></i>Confirmar Aprobación';
-        label.textContent        = 'Observaciones de aprobación (opcional)';
-    } else {
-        header.style.background  = 'linear-gradient(135deg,#FEF2F2,#FEE2E2)';
-        title.textContent        = '❌ Rechazar Pago';
-        title.style.color        = '#7F1D1D';
-        btn.className            = 'btn btn-danger rounded-3 px-4 fw-bold';
-        btn.innerHTML            = '<i class="fas fa-times me-2"></i>Confirmar Rechazo';
-        label.textContent        = 'Motivo del rechazo (recomendado)';
-    }
-
-    bsModal.show();
-}
-</script>
+<!-- Script moved to assets/js/pagos.js -->
 
 <?php
 require_once __DIR__ . '/../includes/footer.php';

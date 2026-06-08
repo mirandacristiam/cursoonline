@@ -1,0 +1,33 @@
+/* /cursoonline/admin/assets/css/reportes.css */
+/* Reportes module — EduTech Academy Admin */
+
+.reportes-tabla th {
+  font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.04em; color: #64748B;
+}
+
+.reportes-kpi {
+  padding: 1.5rem; border-radius: 12px;
+  text-align: center; border: 1px solid #E2E8F0;
+  transition: box-shadow 0.2s;
+}
+.reportes-kpi:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.reportes-kpi-numero {
+  font-size: 2rem; font-weight: 700;
+  letter-spacing: -0.02em; margin-bottom: 0.25rem;
+}
+.reportes-kpi-label {
+  font-size: 0.8rem; color: #94A3B8;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+.reportes-nav .nav-link {
+  color: #64748B; border-radius: 8px;
+  padding: 0.6rem 1.2rem; font-size: 0.85rem;
+  font-weight: 500; transition: all 0.15s;
+}
+.reportes-nav .nav-link:hover { background: #F1F5F9; color: #1E293B; }
+.reportes-nav .nav-link.active { background: #2563EB; color: #fff; }
+
+.reportes-tab-content { min-height: 350px; }
+.reportes-tab-content canvas { max-height: 340px; }

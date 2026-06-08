@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../config/constants.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/security.php';
+require_once __DIR__ . '/../../includes/csrf.php';
 
 // Validar que el usuario tenga el rol de estudiante
 iniciar_sesion_segura();
@@ -57,6 +58,62 @@ $script_name = basename($_SERVER['PHP_SELF']);
     
     <!-- Student Custom Styles (Separado) -->
     <link href="assets/css/student.css" rel="stylesheet">
+    <style>
+    /* ── Fijar layout: body/html nunca scroll ──────────── */
+    html, body {
+        height: 100% !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .dashboard-wrapper {
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important; left: 0 !important; bottom: 0 !important;
+        width: 260px !important;
+        z-index: 1050 !important;
+        overflow-y: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .top-navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 260px !important;
+        right: 0 !important;
+        height: 64px !important;
+        z-index: 900 !important;
+        background: #fff !important;
+        border-bottom: 1px solid #E2E8F0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 1.5rem !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+    }
+    .main-content {
+        margin: 64px 0 0 260px !important;
+        height: calc(100vh - 64px) !important;
+        overflow: hidden !important;
+    }
+    .content-body {
+        height: 100% !important;
+        overflow-y: auto !important;
+        padding: 1.75rem !important;
+        background: #F1F5F9 !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    @media (max-width: 991.98px) {
+        .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .sidebar.active { transform: translateX(0); }
+        .sidebar-overlay.active { display: block; }
+        .top-navbar { left: 0 !important; }
+        .main-content { margin: 64px 0 0 0 !important; }
+    }
+    </style>
 </head>
 <body>
 
@@ -100,27 +157,11 @@ $script_name = basename($_SERVER['PHP_SELF']);
                         <i class="fas fa-wallet"></i> Historial Pagos
                     </a>
                 </li>
-                <li class="sidebar-item <?= $script_name === 'perfil.php' ? 'active' : '' ?>">
-                    <a href="perfil.php" class="sidebar-link">
-                        <i class="fas fa-user-circle"></i> Perfil
-                    </a>
-                </li>
-                <li class="sidebar-item <?= $script_name === 'notificaciones.php' ? 'active' : '' ?>">
-                    <a href="notificaciones.php" class="sidebar-link">
-                        <i class="fas fa-bell"></i> Notificaciones
-                        <?php if ($notificaciones_no_leidas > 0): ?>
-                            <span class="badge bg-danger ms-auto"><?= $notificaciones_no_leidas ?></span>
-                        <?php endif; ?>
-                    </a>
-                </li>
             </ul>
-            
-            <div class="sidebar-footer">
-                <a href="../auth/logout.php" class="sidebar-link text-danger">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </a>
-            </div>
         </aside>
+
+        <!-- Overlay para cerrar sidebar en móvil -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="main-content">
@@ -133,20 +174,30 @@ $script_name = basename($_SERVER['PHP_SELF']);
                     <h2 class="h5 fw-bold text-muted mb-0">Bienvenido de nuevo, <?= sanitizar_html($estudiante['primer_nombre'] . ' ' . $estudiante['primer_apellido']) ?></h2>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Notificaciones rápido -->
-                    <a href="notificaciones.php" class="btn btn-light position-relative">
-                        <i class="far fa-bell"></i>
+                    <!-- Notificaciones -->
+                    <a href="notificaciones.php" class="position-relative text-muted" style="text-decoration:none;">
+                        <i class="fas fa-bell fs-5"></i>
                         <?php if ($notificaciones_no_leidas > 0): ?>
-                            <span class="notification-badge-dot"></span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                  style="font-size:0.6rem;"><?= $notificaciones_no_leidas ?></span>
                         <?php endif; ?>
                     </a>
-                    <!-- Foto y Perfil -->
-                    <div class="d-flex align-items-center gap-2">
-                        <img src="<?= $estudiante['foto_perfil'] ?: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80' ?>" 
-                             alt="Avatar" 
-                             class="rounded-circle border border-2 border-primary" 
-                             style="width: 36px; height: 36px; object-fit: cover;">
-                        <span class="fw-semibold d-none d-sm-inline"><?= sanitizar_html($estudiante['primer_nombre']) ?></span>
+                    <!-- Dropdown Perfil / Cerrar Sesión -->
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 dropdown-toggle d-flex align-items-center gap-2"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                style="background:none;">
+                            <img src="<?= $estudiante['foto_perfil'] ?: STUDENT_FOTO_URL . 'default-avatar.svg' ?>"
+                                 alt="Avatar" id="headerAvatar"
+                                 class="rounded-circle border border-2 border-primary"
+                                 style="width:36px;height:36px;object-fit:cover;cursor:pointer;">
+                            <span class="fw-semibold d-none d-sm-inline text-dark"><?= sanitizar_html($estudiante['primer_nombre']) ?></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 border-0">
+                            <li><a class="dropdown-item" href="perfil.php"><i class="fas fa-user-circle me-2 text-primary"></i>Mi Perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../auth/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
                     </div>
                 </div>
             </header>
