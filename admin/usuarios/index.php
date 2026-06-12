@@ -9,6 +9,17 @@ $page_script = '../assets/js/usuarios.js';
 $page_css    = '../assets/css/usuarios.css';
 require_once __DIR__ . '/../includes/header.php';
 
+// Helper para llamar SPs sin OUT params
+function sp_exec($pdo, $sql, $params = []) {
+    $emulate = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+    $stmt = $pdo->prepare($sql);
+    $r = $stmt->execute($params);
+    $stmt->closeCursor();
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $emulate);
+    return $r;
+}
+
 $msg_ok = $msg_err = '';
 
 // ── POST: Cambiar estado (activar/inactivar) ─────────────────
@@ -22,21 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_target   = (int)($_POST['id_usuario'] ?? 0);
         $nuevo_estado = (int)($_POST['nuevo_estado'] ?? 0);
         if ($id_target && $id_target !== $id_usuario) { // No puede cambiarse a sí mismo
-            $pdo->prepare("UPDATE usuarios SET estado_activo = ?, fecha_modificacion = NOW(), modificado_por = ? WHERE id_usuario_pk = ?")
-                ->execute([$nuevo_estado, $id_usuario, $id_target]);
+            sp_exec($pdo, 'CALL sp_admin_cambiar_estado_usuario(:id, :est, :usr)', [
+                ':id'  => $id_target,
+                ':est' => $nuevo_estado,
+                ':usr' => $id_usuario,
+            ]);
             $msg_ok = $nuevo_estado ? 'Usuario activado correctamente.' : 'Usuario desactivado correctamente.';
         } else {
             $msg_err = 'No puedes cambiar el estado de tu propio usuario.';
-        }
-    } elseif ($accion === 'cambiar_rol') {
-        $id_target  = (int)($_POST['id_usuario'] ?? 0);
-        $nuevo_rol  = (int)($_POST['nuevo_rol']  ?? 0);
-        if ($id_target && $id_target !== $id_usuario && in_array($nuevo_rol, [ROL_ADMIN_TOTAL, ROL_PROFESOR, ROL_ESTUDIANTE])) {
-            $pdo->prepare("UPDATE usuarios SET id_rol_fk = ?, fecha_modificacion = NOW(), modificado_por = ? WHERE id_usuario_pk = ?")
-                ->execute([$nuevo_rol, $id_usuario, $id_target]);
-            $msg_ok = 'Rol actualizado correctamente.';
-        } else {
-            $msg_err = 'Operación no permitida.';
         }
     }
 }
@@ -243,9 +247,17 @@ $stats = $pdo->query("
                     </td>
                     <td class="text-center pe-4">
                         <div class="d-flex gap-1 justify-content-center">
-                            <!-- Ver / Editar -->
+                            <!-- Ver -->
+                            <a href="ver.php?id=<?= $u['id_usuario_pk'] ?>"
+                               class="btn btn-outline-info btn-sm"
+                               style="border-radius:8px;"
+                               data-bs-toggle="tooltip" title="Ver detalle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <!-- Editar -->
                             <a href="editar.php?id=<?= $u['id_usuario_pk'] ?>"
-                               class="btn-admin-blue btn-sm"
+                               class="btn btn-outline-primary btn-sm"
+                               style="border-radius:8px;"
                                data-bs-toggle="tooltip" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>

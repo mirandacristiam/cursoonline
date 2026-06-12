@@ -1,37 +1,48 @@
 /* /cursoonline/student/assets/css/student.css */
 /* ============================================================
- * RESUMEN DEL ARCHIVO: /cursoonline/student/assets/css/student.css
- * ============================================================
- * Hoja de estilos del panel estudiantil. Provee la estructura
- * grid, el sidebar oscuro y responsive, y tarjetas académicas.
- * ============================================================
- */
+ * Estilos del Panel del Estudiante — EduTech Academy
+ * Layout fixed + tarjetas académicas
+ * ============================================================ */
 
 :root {
-    --sidebar-w:   260px;
-    --navbar-h:    64px;
-    --border-clr:  #E2E8F0;
-    --light-bg:    #F1F5F9;
+    --primary-color:   #1A3C6E;
+    --secondary-color: #2563EB;
+    --accent-color:    #38BDF8;
+    --success-color:   #10B981;
+    --warning-color:   #F59E0B;
+    --danger-color:    #EF4444;
+    --sidebar-w:       260px;
+    --navbar-h:        64px;
+    --border-clr:      #E2E8F0;
+    --light-bg:        #F1F5F9;
+    --dark-bg:         #0F172A;
 }
 
-/* ── Evitar scroll del body/html ──────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 html, body {
     height: 100%;
     overflow: hidden;
     margin: 0;
     padding: 0;
+    font-family: 'Inter', sans-serif;
 }
 
-/* ── Sidebar (siempre fijo) ──────────────────────────── */
+.dashboard-wrapper {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ── Sidebar (fijo) ──────────────────────────────────── */
 .sidebar {
-    width: var(--sidebar-w);
-    background: #0F172A;
-    color: #CBD5E1;
     position: fixed;
     top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--dark-bg);
+    color: #CBD5E1;
+    z-index: 1050;
     display: flex;
     flex-direction: column;
-    z-index: 1050;
     overflow-y: auto;
 }
 
@@ -53,8 +64,16 @@ html, body {
 
 .sidebar-brand i { font-size: 1.3rem; }
 
-.sidebar-menu { list-style: none; padding: 0.25rem 0; }
-.sidebar-item { padding: 0 0.75rem; margin-bottom: 2px; }
+.sidebar-menu {
+    list-style: none;
+    padding: 0.25rem 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    padding: 0 0.75rem;
+    margin-bottom: 2px;
+}
 
 .sidebar-link {
     display: flex;
@@ -82,10 +101,12 @@ html, body {
 .sidebar-item.active .sidebar-link { background: rgba(37,99,235,0.2); color: #fff; font-weight: 600; }
 .sidebar-item.active .sidebar-link i { color: #93C5FD; }
 
-/* ── Top navbar (siempre fijo arriba a la derecha) ───── */
+/* ── Top navbar (fijo) ───────────────────────────────── */
 .top-navbar {
     position: fixed;
-    top: 0; left: var(--sidebar-w); right: 0;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
     height: var(--navbar-h);
     background: #fff;
     border-bottom: 1px solid var(--border-clr);
@@ -97,10 +118,11 @@ html, body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
-/* ── Main content (desplazado para dejar espacio) ────── */
+/* ── Main content ────────────────────────────────────── */
 .main-content {
     margin: var(--navbar-h) 0 0 var(--sidebar-w);
     height: calc(100vh - var(--navbar-h));
+    overflow: hidden;
 }
 
 .content-body {
@@ -108,20 +130,8 @@ html, body {
     overflow-y: auto;
     padding: 1.75rem;
     background: var(--light-bg);
+    -webkit-overflow-scrolling: touch;
 }
-
-/* ── Transition rotate (chevron en collapses) ────────── */
-.transition-rotate {
-    transition: transform 0.3s ease;
-}
-[aria-expanded="true"] .transition-rotate,
-.collapse.show + .transition-rotate,
-.transition-rotate.rotated {
-    transform: rotate(90deg);
-}
-
-/* ── Alertas ocultas por defecto ─────────────────────── */
-.alert-custom { display: none; }
 
 /* ── Overlay móvil ───────────────────────────────────── */
 .sidebar-overlay {
@@ -133,6 +143,130 @@ html, body {
 }
 .sidebar-overlay.show,
 .sidebar-overlay.active { display: block; }
+
+/* ── Tarjetas de estadísticas ────────────────────────── */
+.stat-card {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.stat-icon-blue { background-color: rgba(37, 99, 235, 0.1); color: var(--secondary-color); }
+.stat-icon-green { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+.stat-icon-amber { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+.stat-icon-red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+
+.card-custom {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #E2E8F0;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.card-body-custom {
+    padding: 1.5rem;
+}
+
+/* ── Progress bars ───────────────────────────────────── */
+.progress-bar-custom {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #E2E8F0;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background-color: var(--success-color);
+    transition: width 0.5s ease-in-out;
+}
+
+/* ── Video / clases ──────────────────────────────────── */
+.video-container {
+    position: relative;
+    padding-top: 56.25%;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.video-container iframe, .video-container video {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.class-list-group {
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.class-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #F1F5F9;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--dark-text);
+}
+
+.class-item:hover, .class-item.active {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.class-item.active {
+    border-left: 4px solid var(--secondary-color);
+}
+
+/* ── Badges ──────────────────────────────────────────── */
+.badge-custom {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-active { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+.badge-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+.badge-cancelled { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+
+/* ── Transición rotate (collapses) ──────────────────── */
+.transition-rotate {
+    transition: transform 0.3s ease;
+}
+[aria-expanded="true"] .transition-rotate,
+.collapse.show + .transition-rotate,
+.transition-rotate.rotated {
+    transform: rotate(90deg);
+}
+
+/* ── Alertas ocultas por defecto ─────────────────────── */
+.alert-custom { display: none; }
 
 /* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 991.98px) {
